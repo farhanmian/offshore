@@ -1,0 +1,124 @@
+import React, { useState } from "react";
+import ArrowDown from "../icons/ArrowDown";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+
+const SideBar = () => {
+  const router = useRouter();
+  const pathName = router.pathname;
+
+  const [openCandidate, setOpenCandidate] = useState(false);
+  const [openSkill, setOpenSkill] = useState(false);
+
+  return (
+    <div className="w-65 px-7.5 sidebar fixed left-0 top-0 pt-24 flex min-h-screen">
+      {/*link container  */}
+      <div className="text-sm font-semibold text-gray3 w-50 mt-8">
+        <NextLink href="/admin/dashboard">
+          <a className={pathName === "/admin/dashboard" ? "text-black" : ""}>
+            Dashboard
+          </a>
+        </NextLink>
+        <div className="mb-3 mt-3">
+          <div
+            className={`flex items-center justify-between w-full cursor-pointer ${
+              pathName === "/admin/createCandidate" ? "text-black" : ""
+            }`}
+            onClick={() => {
+              setOpenCandidate(!openCandidate);
+            }}
+          >
+            <p>Candidate</p>
+            <span
+              className={`${openCandidate ? "rotate-180" : ""} transition100`}
+            >
+              <ArrowDown />
+            </span>
+          </div>
+
+          <div
+            className={`ml-3 ${
+              openCandidate ? "h-14 mt-3" : "h-0"
+            } overflow-hidden transition100`}
+          >
+            <NextLink href="/admin/createCandidate">
+              <a
+                className={`mb-3 ${
+                  pathName === "/admin/createCandidate" ? "text-black" : ""
+                }`}
+              >
+                Add a Candidate
+              </a>
+            </NextLink>
+            <NextLink href="/admin/appliedCandidates">
+              <a
+                className={
+                  pathName === "/admin/appliedCandidates" ? "text-black" : ""
+                }
+              >
+                Applied Candidate
+              </a>
+            </NextLink>
+          </div>
+        </div>
+        <div className="mb-3">
+          <div
+            className={`flex items-center justify-between w-full cursor-pointer ${
+              pathName === "/admin/createSkill"
+                ? "text-black"
+                : pathName === "/admin/allSkills"
+                ? "text-black"
+                : ""
+            }`}
+            onClick={() => {
+              setOpenSkill(!openSkill);
+            }}
+          >
+            <p>Skills</p>
+            <span className={`${openSkill ? "rotate-180" : ""} transition100`}>
+              <ArrowDown />
+            </span>
+          </div>
+
+          <div
+            className={`ml-3 flex flex-col ${
+              openSkill ? "min-h-[20px] mt-3" : "h-0"
+            } overflow-hidden transition100`}
+          >
+            <NextLink href="/admin/createSkill">
+              <a
+                className={`mb-2 ${
+                  pathName === "/admin/createSkill" ? "text-black" : ""
+                }`}
+              >
+                Add a Skill
+              </a>
+            </NextLink>
+            <NextLink href="/admin/allSkills">
+              <a
+                className={pathName === "/admin/allSkills" ? "text-black" : ""}
+              >
+                All Skills
+              </a>
+            </NextLink>
+          </div>
+        </div>
+
+        <NextLink href="/admin/createProperty">
+          <a
+            className={`mb-2.5 ${
+              pathName.includes("createProperty") ? "text-black" : ""
+            }`}
+          >
+            Create Property
+          </a>
+        </NextLink>
+        <NextLink href="/admin/termsAndConditions">
+          <a className="mb-2.5">Terms and Conditions</a>
+        </NextLink>
+      </div>
+    </div>
+  );
+};
+
+export default SideBar;

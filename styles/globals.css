@@ -1,0 +1,205 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-size: 16px;
+}
+
+/* Mobile phones */
+@media (max-width: 767px) {
+  html {
+    font-size: 3.2vw;
+  }
+}
+
+/* Tablets */
+@media (min-width: 768px) and (max-width: 1024px) {
+  html {
+    font-size: 1.9vw;
+  }
+}
+
+/* Small Desktop */
+@media (min-width: 1025px) {
+  html {
+    font-size: 1.05vw;
+  }
+}
+
+/*  Desktop */
+@media (min-width: 1441px) {
+  html {
+    font-size: 0.9375vw;
+  }
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  min-height: 100vh;
+}
+
+#__next {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+@layer components {
+  .button-primary {
+    @apply rounded bg-secondary-main py-2 px-10 hover:bg-secondary-dark text-base font-bold tracking-wide text-white;
+  }
+}
+
+.input {
+  @apply border-none focus:outline-none py-2.5 px-2;
+}
+
+.transition100 {
+  @apply transition-all duration-100 ease-linear;
+}
+
+.icon {
+  @apply flex cursor-pointer transition-all duration-150 ease-linear hover:scale-105 active:scale-100;
+}
+
+.notificationIcon {
+  max-width: 28px;
+  max-height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.sidebar {
+  box-shadow: 4px 0px 8px rgba(0, 0, 0, 0.15);
+}
+
+.main {
+  background-image: url(../assets/img/header-img.png);
+  padding: 60px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: cover;
+  object-position: bottom;
+}
+
+.imageContainer > span {
+  min-width: 100%;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+.contactPageImage {
+  background-image: url(../assets/img/contact-us.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.aboutPageImage {
+  background-image: url(../assets/img/phone.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.list {
+  background-image: url(../assets/img/popular-skills.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.clippy {
+  /* transform: matrix(-1, 0, 0, 1, 0, 0); */
+  filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+.clippy span {
+  clip-path: polygon(75% 0%, 62% 50%, 75% 100%, 0% 100%, 0 48%, 0% 0%);
+}
+
+table .table-data:nth-child(3) {
+  white-space: break-spaces;
+}
+
+.tooltip-gradient {
+  background: linear-gradient(98.32deg, #050c3d -1.88%, #16b3ef 103.24%);
+  border-radius: 4px;
+}
+
+abbr {
+  border-bottom: none !important;
+  cursor: inherit !important;
+  text-decoration: none !important;
+}
+
+.tooltip-gradient {
+  background: linear-gradient(98.32deg, #050c3d -1.88%, #16b3ef 103.24%);
+  border-radius: 4px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #131313;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #000000;
+}
+
+@media only screen and (max-width: 1279px) {
+  .aboutPageImage {
+    background-image: none;
+  }
+}
+
+@media (max-width: 1000px) {
+  .main {
+    width: 95vw;
+    padding: 40px;
+  }
+}
+
+@media (max-width: 700px) {
+  .main {
+    width: 98vw;
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .main {
+    width: 100vw;
+    /* height: 250px; */
+  }
+}
+
+@media (hover: none) {
+  .tooltip {
+    display: none !important;
+  }
+}
