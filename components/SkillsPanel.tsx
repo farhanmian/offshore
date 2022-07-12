@@ -1,6 +1,9 @@
 import React from "react";
 
-const SkillsPanel: React.FC<{ data: any; setSelected: () => void }> = ({ data, setSelected }) => {
+const SkillsPanel: React.FC<{ data: any; setSelected: (e: any) => void }> = ({
+  data,
+  setSelected,
+}) => {
   return (
     <div className="w-full order-3 my-4">
       <ul className="flex items-center gap-x-14 gap-y-4 flex-wrap mbTab:order-5 mbTab:w-full mbTab:flex-wrap mbTab:justify-between">

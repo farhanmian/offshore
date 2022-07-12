@@ -43,7 +43,9 @@ const Candidates = ({
           )
         ) : (
           !loading && (
-            <NoValueMessage>Look like there's no candidate...</NoValueMessage>
+            <NoValueMessage>
+              {"Look like there's no candidate..."}
+            </NoValueMessage>
           )
         )}
       </ul>
@@ -121,6 +123,7 @@ const CandidateList = ({ candidates, stateData }: any) => {
             <th className={styles.head}>Candidate No.</th>
             <th className={styles.head}>Title</th>
             {stateData.map((item: any) => {
+              // eslint-disable-next-line react/jsx-key
               return <th className={styles.head}>{item.skill.name}</th>;
             })}
             <th className={styles.head}>All Skills known</th>
@@ -135,7 +138,7 @@ const CandidateList = ({ candidates, stateData }: any) => {
             candidates.map((candidate: any, i: number) => {
               return (
                 <NextLink href={`/accountInfo?id=${candidate.id}`} key={i}>
-                  <tr className="hover:bg-gray5 cursor-pointer">
+                  <tr key={i} className="hover:bg-gray5 cursor-pointer">
                     <td className={styles.body}>{candidate.employeeNumber}</td>
                     <td className={styles.body}>{candidate.title}</td>
 
