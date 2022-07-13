@@ -1,0 +1,25 @@
+.main {
+  background-image: url("../assets/img/header-img.png");
+  padding: 60px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  object-fit: cover;
+  object-position: bottom;
+}
+
+.contactPageImage {
+  background-image: url("../assets/img/contact-us.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.contactPagePhoneImage {
+  background-image: url("../assets/img/phone.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.popularSkillsBgImg {
+  background-image: url("../assets/img/popular-skills.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}

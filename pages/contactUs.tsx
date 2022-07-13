@@ -10,6 +10,7 @@ import Input from "../components/partials/Input";
 import LoadingSpinner from "../components/partials/Loading/LoadingSpinner";
 import TextArea from "../components/partials/TextArea";
 import useAuthState from "../hooks/useAuthState";
+import styles from "../styles/Images.module.css";
 
 const ContactUs = () => {
   const {
@@ -46,7 +47,9 @@ const ContactUs = () => {
       <div className="w-full">
         <HeadingPrimary heading="contact us" className="mb-7" />
 
-        <div className="w-full flex flex-col lg:flex-row justify-between relative p-5 md:p-15 md:pl-17.5 pt-17.5 text-white rounded-lg min-h-[577px] contactPageImage">
+        <div
+          className={`w-full flex flex-col lg:flex-row justify-between relative p-5 md:p-15 md:pl-17.5 pt-17.5 text-white rounded-lg min-h-[577px] ${styles.contactPageImage}`}
+        >
           {/* text container */}
           <div className="flex flex-col justify-between mb-16 lg:mb-0 lg:h-[440px] lg:max-w-xl">
             <div className="mb-15 lg:mb-0">
@@ -84,7 +87,9 @@ const ContactUs = () => {
           </div>
 
           {/* phone img */}
-          <div className="xl:absolute xl:h-[120%] w-full lg:w-1/3 xl:w-[365px] xl:right-16 -top-14 rounded-lg flex flex-col justify-center xl:p-10 xl:py-20 xl:bg-transparent aboutPageImage">
+          <div
+            className={`xl:absolute xl:h-[120%] w-full lg:w-1/3 xl:w-[365px] xl:right-16 -top-14 rounded-lg flex flex-col justify-center xl:p-10 xl:py-20 xl:bg-transparent ${styles.contactPagePhoneImage}`}
+          >
             <p className="font-bold text-xl lg:text-sm xl:text-xs text-white xl:text-black mb-4">
               Drop a Message
             </p>

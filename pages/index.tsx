@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import Image from "next/image";
-import img from "../assets/img/afs.png";
 import ideaImg from "../assets/img/header-img-2.png";
 import featureImg from "../assets/img/features.png";
 import AfsIcon from "../components/icons/AfsIcon";
@@ -13,6 +12,7 @@ import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useAppContext } from "../store/context/AppContext";
 import NextLink from "next/link";
+import styles from "../styles/Images.module.css";
 
 const dummyData = [
   {
@@ -78,7 +78,7 @@ const Home: NextPage = () => {
         {/* header */}
 
         <div className=" flex items-center justify-center">
-          <div className="rounded-lg md:p-5 main w-full">
+          <div className={`rounded-lg md:p-5 w-full ${styles.main}`}>
             <div className="flex items-center mb-10 justify-between xl:justify-center text-white">
               <div className="xl:w-11/12 md:w-3/4 w-full">
                 <h2 className="lg:text-[32px] font-semibold mb-2 md:mb-5 text-2xl md:text-[25px]">
@@ -124,7 +124,7 @@ const Home: NextPage = () => {
             {" "}
             Most Popular skills
           </div>
-          <div className="list rounded">
+          <div className={`${styles.popularSkillsBgImg} rounded`}>
             <div className="grid grid-cols-3 sm:grid-cols-5 max-w-6xl m-auto items-center justify-center gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10 py-10 px-4 sm:px-[15px] md:px-[30px] lg:px-[60px] capitalize">
               {dummyData.map((item, i) => {
                 return (
