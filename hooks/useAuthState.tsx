@@ -219,7 +219,6 @@ const useAuthState = () => {
   ) => {
     let x = { ...propertyForm };
     const name = e.target.name;
-    console.log(name);
 
     if (name !== "name") return;
 

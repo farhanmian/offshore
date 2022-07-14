@@ -11,16 +11,10 @@ import { URLS } from "./config";
 const headerData: () => any = () => {
   const token = getCookie("token");
 
-  if (token) {
-    return {
-      "Access-Control-Allow-Origin": "*",
-      Authorization: "Bearer " + getCookie("token"),
-    };
-  } else {
-    return {
-      "Access-Control-Allow-Origin": "*",
-    };
-  }
+  return {
+    // "Access-Control-Allow-Origin": "*",
+    Authorization: "Bearer " + getCookie("token"),
+  };
 };
 
 const instance = axios.create({

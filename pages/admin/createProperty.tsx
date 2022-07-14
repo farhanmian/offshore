@@ -31,8 +31,6 @@ const PropertyCard: React.FC<{
     onChangeActiveStatus();
   };
 
-  console.log(propertyName, activeStatus);
-
   return (
     <div className="flex h-20 items-center justify-between text-black font-medium">
       <p>{propertyName}</p>
@@ -72,8 +70,6 @@ const CreateProperty = () => {
     properties: [];
     count: number;
   }>({ properties: [], count: 0 });
-
-  console.log("propertyList", propertyList);
 
   useEffect(() => {
     const fetchAllPropertyData = async () => {
@@ -117,8 +113,6 @@ const CreateProperty = () => {
       notifyError(err.message);
     }
   };
-
-  console.log("propertyList", propertyList);
 
   const deletePropertyHandler = async (id: string) => {
     console.log(id);
