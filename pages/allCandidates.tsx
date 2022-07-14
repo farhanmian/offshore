@@ -17,6 +17,7 @@ import Pagination from "../components/partials/Pagination";
 import LoadingSpinner from "../components/partials/Loading/LoadingSpinner";
 import NoOfCandidateShown from "../components/partials/NoOfCandidateShown";
 import { noImgFoundBase64 } from "../assets/img/no-img-found-base64";
+import { info } from "console";
 
 const CandidateCard: React.FC<{
   className: string;
@@ -337,9 +338,20 @@ export const getServerSideProps = async (context: any) => {
     },
   });
 
+  if (res.status !== 200) {
+    return {
+      props: {
+        candidatesData: {
+          candidates: [],
+          count: 0,
+        },
+      },
+    };
+  }
+
   const data = await res.json();
 
-  console.log(data);
+  console.log("data", data);
 
   const updatedData =
     data &&
