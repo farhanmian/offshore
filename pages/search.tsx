@@ -9,11 +9,12 @@ import Loader from "../components/Loader";
 import ArrowNext from "../components/icons/ArrowNext";
 import { getCookie, setCookies } from "cookies-next";
 import { useAppContext } from "../store/context/AppContext";
+import { BASE_URL } from "../api/config";
 
 const Search = () => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
-  const url = `http://localhost:3000/api/client/get/candidate/?limit=${limit}&page=${page}`;
+  const url = `${BASE_URL}/client/get/candidate/?limit=${limit}&page=${page}`;
   const [stateData, state] = useList<any | never>([]);
   const [loadMore, setLoadMore] = useState<boolean>(false);
 

@@ -221,7 +221,7 @@ const Candinfo = () => {
 
     setApplyForm(x);
   };
-  console.log("applyform", applyForm);
+
   const applyFormSubmitHandler = async () => {
     setIsLoading(true);
     try {

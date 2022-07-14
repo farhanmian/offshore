@@ -1,5 +1,5 @@
 // const BASE_URL = "http://localhost:3000/api";
-const BASE_URL = "https://offshore-server.vercel.app/api";
+export const BASE_URL = "https://offshore-server.vercel.app/api";
 
 export const URLS = {
   SIGN_IN: BASE_URL + "/user/login",

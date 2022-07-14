@@ -111,7 +111,7 @@ const ContactUs = () => {
                 handleForm={handleContactUsForm}
               />
               <Input
-                placeholder="email"
+                placeholder="Email"
                 className="px-3 h-10"
                 containerClassName={`${
                   contactUsForm.email.error ? "mb-8" : "mb-3"
@@ -124,7 +124,7 @@ const ContactUs = () => {
                 handleForm={handleContactUsForm}
               />
               <Input
-                placeholder="phone"
+                placeholder="Phone"
                 className="px-3 h-10"
                 containerClassName={`${
                   contactUsForm.phone.error ? "mb-8" : "mb-3"
