@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ArrowDown from "../icons/ArrowDown";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
+import { removeCookies } from "cookies-next";
 
 const SideBar = () => {
   const router = useRouter();
@@ -10,12 +11,23 @@ const SideBar = () => {
   const [openCandidate, setOpenCandidate] = useState(false);
   const [openSkill, setOpenSkill] = useState(false);
 
+  const logoutHandler = () => {
+    removeCookies("token");
+    router.push("/admin/signIn");
+  };
+
+  // const style = ["hover:text-gray2 transition100"];
+
   return (
     <div className="w-65 px-7.5 sidebar fixed left-0 top-0 pt-24 flex min-h-screen">
       {/*link container  */}
-      <div className="text-sm font-semibold text-gray3 w-50 mt-8">
+      <div className="text-sm font-semibold text-gray3 w-50 mt-8 flex flex-col">
         <NextLink href="/admin/dashboard">
-          <a className={pathName === "/admin/dashboard" ? "text-black" : ""}>
+          <a
+            className={`${
+              pathName === "/admin/dashboard" ? "text-black" : ""
+            } w-max`}
+          >
             Dashboard
           </a>
         </NextLink>
@@ -106,7 +118,7 @@ const SideBar = () => {
 
         <NextLink href="/admin/createProperty">
           <a
-            className={`mb-2.5 ${
+            className={`mb-2.5 w-max ${
               pathName.includes("createProperty") ? "text-black" : ""
             }`}
           >
@@ -114,8 +126,12 @@ const SideBar = () => {
           </a>
         </NextLink>
         <NextLink href="/admin/termsAndConditions">
-          <a className="mb-2.5">Terms and Conditions</a>
+          <a className="mb-2.5 w-max">Terms and Conditions</a>
         </NextLink>
+
+        <a onClick={logoutHandler} className="mb-2.5 w-max">
+          Sign Out
+        </a>
       </div>
     </div>
   );

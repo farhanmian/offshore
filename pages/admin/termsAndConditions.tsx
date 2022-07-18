@@ -180,8 +180,6 @@ const TermsAndConditions: React.FC<{
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
 
-  console.log("termsData", termsData);
-
   const addNewTermsHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

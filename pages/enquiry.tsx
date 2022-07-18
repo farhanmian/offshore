@@ -49,31 +49,44 @@ const Enquiry = () => {
   useEffect(() => {
     setDataFetchingLoading(true);
     const fetchHiringCandidatesList = async () => {
-      const hiringList: any = getCookie("hiringList");
-      const data = hiringList ? JSON.parse(hiringList) : [];
-      setHiringList(data);
+      try {
+        const hiringList: any = getCookie("hiringList");
+        const data = hiringList ? JSON.parse(hiringList) : [];
+        setHiringList(data);
 
-      console.log(data);
-      const resp = await Client.getMultipleCandidates(data);
-      console.log("resp", resp);
-      setDataFetchingLoading(false);
+        console.log(data);
+        const resp = await Client.getMultipleCandidates(data);
+        console.log("resp", resp);
+        setDataFetchingLoading(false);
 
-      if (resp.status !== 200 && resp.status !== 201) return;
-      setCandidatesListData(resp.data);
+        if (resp.status !== 200 && resp.status !== 201) {
+          throw new Error(resp);
+        }
 
-      const enquiryFormCandidateDetail: any = [];
-      resp.data.map((item: CandidateDataType) => {
-        enquiryFormCandidateDetail.push({
-          id: item.id,
-          employeeNumber: item.employeeNumber,
+        setCandidatesListData(resp.data);
+
+        const enquiryFormCandidateDetail: any = [];
+        resp.data.map((item: CandidateDataType) => {
+          enquiryFormCandidateDetail.push({
+            id: item.id,
+            employeeNumber: item.employeeNumber,
+          });
         });
-      });
 
-      const detailData: any = {
-        target: { name: "candidateDetails", value: enquiryFormCandidateDetail },
-      };
+        const detailData: any = {
+          target: {
+            name: "candidateDetails",
+            value: enquiryFormCandidateDetail,
+          },
+        };
 
-      handleEnquiryForm(detailData);
+        handleEnquiryForm(detailData);
+      } catch (err: any) {
+        console.log(err);
+        notifyError(err.message);
+        setCandidatesListData([]);
+        setDataFetchingLoading(false);
+      }
     };
     fetchHiringCandidatesList();
   }, []);

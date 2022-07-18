@@ -1,6 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getCookie } from "cookies-next";
 import { url } from "inspector";
+import https from "https";
+
 import {
   ApplyAsDeveloperFormType,
   ContactUsFormType,
@@ -10,16 +12,24 @@ import { URLS } from "./config";
 
 const headerData: () => any = () => {
   const token = getCookie("token");
-
-  return {
-    // "Access-Control-Allow-Origin": "*",
-    Authorization: "Bearer " + getCookie("token"),
-  };
+  if (token) {
+    return {
+      "Access-Control-Allow-Origin": "*",
+      Authorization: "Bearer " + getCookie("token"),
+    };
+  } else {
+    return {
+      "Access-Control-Allow-Origin": "*",
+    };
+  }
 };
 
 const instance = axios.create({
   timeout: 30000,
   headers: headerData(),
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false,
+  }),
 });
 
 const responseBody = (response: AxiosResponse) => response;

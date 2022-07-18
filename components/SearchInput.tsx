@@ -14,9 +14,18 @@ export default function SearchInput({ selected, setSelected }: any) {
   const { landingPageSearchFormValue } = useAppContext();
 
   const fetchAllSkills = useAsync(async () => {
-    const response = await Client.getAllSkills();
-    const data = await response.data;
-    return data;
+    try {
+      const response = await Client.getAllSkills();
+      if (response.stauts !== 200) {
+        throw new Error(response);
+      }
+      const data = await response.data;
+      console.log("data", data);
+      return data;
+    } catch (err) {
+      console.log(err);
+      return [];
+    }
   }, []);
 
   const filteredSkills =
