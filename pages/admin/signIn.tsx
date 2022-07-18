@@ -151,7 +151,7 @@ const SignIn = () => {
         <div className="m-auto">
           <LoadingComponent
             loadingSpinnerClassName="w-8 h-8"
-            message="Signing Up..."
+            message="Signing In..."
             textFont="text-xl"
           />
         </div>

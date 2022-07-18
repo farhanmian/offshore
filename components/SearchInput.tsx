@@ -16,7 +16,8 @@ export default function SearchInput({ selected, setSelected }: any) {
   const fetchAllSkills = useAsync(async () => {
     try {
       const response = await Client.getAllSkills();
-      if (response.stauts !== 200) {
+      console.log("response", response);
+      if (response.status !== 200) {
         throw new Error(response);
       }
       const data = await response.data;
