@@ -49,11 +49,17 @@ const useAuthState = () => {
     const name = e.target.name;
     const value = e.target.value;
 
+    if (
+      name !== "email" &&
+      name !== "skillName" &&
+      name !== "cv" &&
+      /[^a-zA-Z0-9 ]/.test(value)
+    ) {
+      error = "Entered value must not be a special character!";
+    }
     if (name === "email") {
       if (value.trim().length === 0) {
         error = "Email must not be empty!";
-      } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(value)) {
-        error = "Invalid Email";
       }
     } else if (name === "password") {
       if (value.trim().length === 0) {
@@ -66,8 +72,10 @@ const useAuthState = () => {
     } else if (name === "name") {
       if (value.trim().length === 0) {
         error = "Name must not be empty!";
-      } else if (value.trim().length > 20) {
-        error = "Maximum character limit is 20";
+      } else if (/[^a-zA-Z0-9 ]/.test(value)) {
+        error = "cannot use special characters!";
+      } else if (value.trim().length > 30) {
+        error = "Maximum character limit is 30";
       }
     } else if (name === "experience" || name === "employeeNumber") {
       if (value.trim().length === 0) {
@@ -78,10 +86,16 @@ const useAuthState = () => {
         error = "Enter a valid Experience";
       } else if (+value < 0) {
         error = "Entered value cannot be less than 0!";
+      } else if (name === "employeeNumber" && +value === 0) {
+        error = "Employee number must be greater than 0!";
+      } else if (name === "employeeNumber" && !/^[1-9]\d*$/.test(value)) {
+        error = "Employee number cannot be a desimal number!";
       }
     } else if (name === "title") {
       if (value.trim().length === 0) {
         error = "Title must not be empty!";
+      } else if (/[^a-zA-Z0-9 ]/.test(value)) {
+        error = "Title must not contain special characters!";
       } else if (value.trim().length < 2) {
         error = "Minimum character limit is 2";
       }
@@ -98,6 +112,8 @@ const useAuthState = () => {
     } else if (name === "value") {
       if (value.trim().length === 0) {
         error = "This field must not be empty!";
+      } else if (/[^a-zA-Z0-9 ]/.test(value)) {
+        error = "value cannot be a special character!";
       }
     } else if (name === "heading") {
       if (value.trim().length === 0) {
@@ -116,8 +132,10 @@ const useAuthState = () => {
     } else if (name === "skillName") {
       if (value.trim().length === 0) {
         error = "Skill name must not be empty!";
-      } else if (value.trim().length > 20) {
-        error = "Maximum character limit is 20";
+      } else if (/[^a-zA-Z0-9. ]/.test(value)) {
+        error = "Skill name must not contain special characters!";
+      } else if (value.trim().length > 30) {
+        error = "Maximum character limit is 30";
       }
     } else if (name === "message") {
       if (value.trim().length === 0) {
@@ -150,12 +168,6 @@ const useAuthState = () => {
     } else if (name === "noticePeriod") {
       if (value.trim().length === 0) {
         error = "Field must not be empty!";
-      } else if (+value === 0) {
-        error = "Notice Period cannot be 0!";
-      } else if (+value > 60) {
-        error = "Notice Period cannot be more than 60 days";
-      } else if (isNaN(+value)) {
-        error = "This field must be a number!";
       }
     } else if (name === "overallExperience") {
       if (value.trim().length === 0) {
@@ -167,6 +179,10 @@ const useAuthState = () => {
       } else if (isNaN(+value)) {
         error = "This field must be a number!";
       }
+    } else if (name === "cv") {
+      if (value.trim().length === 0) {
+        error = "Please select your CV";
+      }
     }
     return error;
   };
@@ -176,7 +192,11 @@ const useAuthState = () => {
     if (form.value.length === 0 && form.error.length === 0) {
       // error = `${key === "skillName" ? "Skill name" : key} should not be empty`;
       error =
-        key === "skillName" ? "Select a Skill!" : `${key} must not be empty`;
+        key === "skillName"
+          ? "Select a Skill!"
+          : key === "cv"
+          ? "Please select your CV"
+          : `${key} must not be empty`;
     } else if (form.value.length === 0 && form.error.length !== 0) {
       error = form.error;
     } else if (form.value.length !== 0 && form.error.length !== 0) {
@@ -310,6 +330,12 @@ const useAuthState = () => {
     x[name]["value"] = e.target.value;
     x[name]["error"] = handleInputValidation(e);
 
+    if (
+      name == "email" &&
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value)
+    ) {
+      x.email.error = "Enter a valid email";
+    }
     setContactUsForm(x);
   };
   const handleEnquiryForm = (
@@ -332,22 +358,11 @@ const useAuthState = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     let x = { ...applyForm };
-    const name = e.target.name;
+    const name = e.target.name as keyof typeof applyForm;
     const value = e.target.value;
-    if (
-      name === "title" ||
-      name === "aboutInfo" ||
-      name === "additionalInfo" ||
-      name === "overallExperience" ||
-      name === "noticePeriod" ||
-      name === "fullTimeJob" ||
-      name === "partTimeJob" ||
-      name === "havePc" ||
-      name === "okWithWorking8To1"
-    ) {
+    if (name !== "skills" && name !== "languages") {
       x[name].value = value;
       x[name].error = handleInputValidation(e);
-    } else {
     }
 
     setApplyForm(x);
@@ -406,7 +421,7 @@ const useAuthState = () => {
 
     /// if there is no type it will be additional type
     if (x.type.value.trim().length === 0) {
-      x.type.value = "OTHER/ADDITIONAL";
+      x.type.value = "OTHER";
     }
     ///// final validation
     for (const [mainKey, mainValue] of Object.entries(x)) {
@@ -566,6 +581,8 @@ const useAuthState = () => {
   const extractlanguageAndRatingForm = () => {
     let x = { ...languageAndRatingForm };
     let error = false;
+
+    console.log("languageAndRatingForm", languageAndRatingForm);
 
     ///// final validation
     for (const [mainKey, mainValue] of Object.entries(x)) {
@@ -729,7 +746,6 @@ const useAuthState = () => {
       // end validation
       for (const [mainKey, mainValue] of Object.entries(x)) {
         let err = "";
-        console.log("mainKey", mainKey);
 
         if (
           mainKey !== "employeeNumber" &&
@@ -765,8 +781,17 @@ const useAuthState = () => {
         console.log("error-false", error);
         throw Error("Invalid or Incomplete Form Fields...");
       }
+
       //extractData
       const data = extractCandidateFormData();
+
+      if (
+        (x.skills.length > 0 && x.skills[0].skillName.length === 0) ||
+        x.skills.length === 0
+      ) {
+        throw new Error("Please add a Skill!");
+      }
+
       console.log("candidate FOrm Data---", data);
       let resp: any;
 
@@ -876,6 +901,7 @@ const useAuthState = () => {
           mainKey === "phone"
         ) {
           err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+          x[mainKey].error = err;
         }
 
         if (err.length !== 0) {
@@ -909,25 +935,19 @@ const useAuthState = () => {
 
       //end validation
       for (const [mainKey, mainValue] of Object.entries(x)) {
+        const key = mainKey as keyof typeof applyForm;
         let err: any = "";
         if (
-          mainKey !== "skills" &&
-          mainKey !== "languages" &&
-          mainKey !== "additionalInfo"
+          key !== "skills" &&
+          key !== "languages" &&
+          key !== "additionalInfo" &&
+          key !== "cv"
         ) {
-          err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
-          if (
-            mainKey !== "title" &&
-            mainKey !== "aboutInfo" &&
-            mainKey !== "overallExperience" &&
-            mainKey !== "noticePeriod" &&
-            mainKey !== "fullTimeJob" &&
-            mainKey !== "partTimeJob" &&
-            mainKey !== "havePc" &&
-            mainKey !== "okWithWorking8To1"
-          )
-            return;
-          x[mainKey].error = err;
+          err = formEmptyAndErrorValidation(
+            mainValue,
+            `${key === "aboutInfo" ? "description" : key}`
+          );
+          x[key].error = err;
         }
         if (err.length !== 0) {
           error = true;
@@ -940,11 +960,14 @@ const useAuthState = () => {
         throw Error("Invalid or Incomplete Form Fields...");
       }
 
-      if (x.skills.length > 0 && x.skills[0].skillName.length === 0) {
+      if (
+        (x.skills.length > 0 && x.skills[0].skillName.length === 0) ||
+        x.skills.length === 0
+      ) {
         throw new Error("Please add a Skill!");
       } else if (
-        x.languages.length > 0 &&
-        x.languages[0].language.length === 0
+        (x.languages.length > 0 && x.languages[0].language.length === 0) ||
+        x.languages.length === 0
       ) {
         throw new Error("Please add a Language!");
       }
@@ -990,7 +1013,7 @@ const useAuthState = () => {
       if (resp.status !== 200) {
         throw new Error(resp);
       }
-
+      console.log("candidate data", resp);
       let x = { ...candidateForm };
 
       Object.keys(x).map((key) => {
@@ -1203,6 +1226,7 @@ const useAuthState = () => {
           key === "aboutInfo" ||
           key === "additionalInfo" ||
           key === "overallExperience" ||
+          key === "cv" ||
           key === "noticePeriod"
         ) {
           x[key].value = "";

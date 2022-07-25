@@ -22,6 +22,7 @@ import toast, { Toaster } from "react-hot-toast";
 import LoadingSpinner from "../../components/partials/Loading/LoadingSpinner";
 import Pagination from "../../components/partials/Pagination";
 import NoOfCandidateShown from "../../components/partials/NoOfCandidateShown";
+import Dropdown from "../../components/partials/Dropdown";
 
 const CandidateCard: React.FC<{
   candidateNo: string;
@@ -143,6 +144,9 @@ const Dashboard: React.FC<{
     }
   }, [page, candidatesListData]);
 
+  // fetching skills
+  useEffect(() => {}, []);
+
   const searchHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -185,6 +189,7 @@ const Dashboard: React.FC<{
       const resp: any = await User.updateCandidateStatus(id);
       console.log("updates candidate status", resp);
       if (resp.status !== 200) return;
+      let status = "";
 
       let x = { ...candidatesListData };
       const data: any = [];
@@ -196,6 +201,7 @@ const Dashboard: React.FC<{
             const updatedData = { ...item };
             updatedData.status =
               item.status === "ENABLED" ? "DISABLED" : "ENABLED";
+            status = updatedData.status;
             data.push(updatedData);
           } else {
             //// push item
@@ -209,7 +215,9 @@ const Dashboard: React.FC<{
 
       setTimeout(() => {
         setCandidatesListData(x);
-        notifySuccess("Skill update Successfully");
+        notifySuccess(
+          status === "ENABLED" ? "Profile Enabled" : "Profile Disabled"
+        );
       }, 300);
     } catch (err: any) {
       console.log(err);
@@ -323,6 +331,9 @@ const Dashboard: React.FC<{
                 containerClassName="mr-5 bg-white"
                 handleForm={searchHandler}
               />
+              {/* <div className="w-56 mr-5">
+                <Dropdown placeholder="Skills" />
+              </div> */}
 
               <Input
                 placeholder="Search by Candidate No."
@@ -334,27 +345,6 @@ const Dashboard: React.FC<{
               />
 
               <NoOfCandidateShown limit={limit} onChange={(e) => setLimit(e)} />
-
-              {/* <div className="bg-primaryBlue pl-4 h-10 pr-1.5 flex items-center justify-between ml-auto rounded">
-                <p className="text-white text-xs font-medium mr-5">
-                  No. of Candidates shown
-                </p>
-
-                <select
-                  id="noOfCandidate"
-                  name="noOfCandidate"
-                  className="w-30 h-7 rounded focus:outline-none px-3 font-bold"
-                  value={limit}
-                  onChange={(e) => {
-                    setLimit(+e.target.value);
-                  }}
-                >
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>25</option>
-                </select>
-              </div> */}
             </div>
 
             {/* candidates */}

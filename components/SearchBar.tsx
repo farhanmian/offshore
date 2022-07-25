@@ -14,25 +14,6 @@ export default function SearchBar({ className }: any) {
   const [candidateList, setCandidateList] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const { setAppliedCandidateCount } = useAppContext();
-
-  /// fetching applied candidates data
-  useEffect(() => {
-    const fetchAppliedCandidates = async () => {
-      try {
-        const resp = await User.getAppliedCandidates(10, 1);
-        const count = resp.data.count;
-        if (resp.status !== 200) {
-          throw new Error(resp);
-        }
-
-        setAppliedCandidateCount(count);
-      } catch (err: any) {
-        console.log(err);
-      }
-    };
-    fetchAppliedCandidates();
-  }, []);
 
   useEffect(() => {
     setSearchValue("");

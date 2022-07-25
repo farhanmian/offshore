@@ -11,6 +11,7 @@ import { useScrollBlock } from "../../hooks/CanScroll";
 import Bell from "../icons/Bell";
 import { useAppContext } from "../../store/context/AppContext";
 import { getCookie } from "cookies-next";
+import { User } from "../../api/apiServices";
 
 type navItem = {
   name: string;
@@ -25,18 +26,45 @@ const navLinks: navItem[] = [
   { name: "contact us", link: "/contactUs" },
 ];
 
+let isInitial = true;
+
 export default function Header() {
   const router = useRouter();
   const size = useViewport();
   const [open, setOpen] = useState<any>(false);
-  const { appliedCandidateCount, setHiringListCount, hiringListCount } =
-    useAppContext();
+  const {
+    appliedCandidateCount,
+    setAppliedCandidateCount,
+    setHiringListCount,
+    hiringListCount,
+  } = useAppContext();
 
   useEffect(() => {
     const hiringList = getCookie("hiringList");
     const hiringCount = hiringList ? JSON.parse(`${hiringList}`) : [];
 
     setHiringListCount(hiringCount.length);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitial) return;
+    const fetchAppliedCandidatesCount = async () => {
+      try {
+        const res = await User.getAppliedCandidates(8, 1);
+        const appliedCount = res.data.count;
+        console.log("applied count", appliedCount);
+        if (res.status !== 200) {
+          throw new Error(res);
+        }
+        if (res) {
+          setAppliedCandidateCount(appliedCount ? appliedCount : 0);
+        }
+        isInitial = false;
+      } catch (err) {
+        console.log("err", err);
+      }
+    };
+    fetchAppliedCandidatesCount();
   }, []);
 
   return (

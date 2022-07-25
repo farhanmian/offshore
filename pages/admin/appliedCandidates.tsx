@@ -48,7 +48,12 @@ const ReqContainer: React.FC<{
           {candidate.title} has applied.{" "}
           <b>
             Overall Exp - {candidate.overallExperience} years, Notice Period -{" "}
-            {candidate.noticePeriod} days, Skills :- {skills.join(", ")}.
+            {candidate.noticePeriod}, Skills :-{" "}
+            {skills.map(
+              (item, i) =>
+                item.length > 15 &&
+                `${item.slice(0, 15)}...${skills.length === i + 1 ? "" : ", "}`
+            )}
           </b>
         </p>
       </NextLink>
@@ -80,7 +85,7 @@ const AppliedCandidates: React.FC<{
   const totalPages = Math.ceil(candidateDataInfo.count / limit);
   const [deleteLoading, setDeleteLoading] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { setAppliedCandidateCount } = useAppContext();
+  const { setAppliedCandidateCount, appliedCandidateCount } = useAppContext();
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
 
   useEffect(() => {
@@ -159,6 +164,11 @@ const AppliedCandidates: React.FC<{
       if (resp.status !== 200) {
         throw new Error(resp);
       }
+
+      const selectedCandidateCount = selectedCandidates.length;
+      console.log("selectedCandidatesCount", selectedCandidateCount);
+
+      setAppliedCandidateCount(appliedCandidateCount - selectedCandidateCount);
 
       let x = { ...candidateDataList };
       const updatedData = x.appliedCandidates.filter(

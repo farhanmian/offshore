@@ -106,6 +106,7 @@ export const applyFormInfo = {
   partTimeJob: { ...basicInputTemplate, value: "yes" },
   havePc: { ...basicInputTemplate, value: "PC" },
   okWithWorking8To1: { ...basicInputTemplate, value: "yes" },
+  cv: { ...basicInputTemplate, type: "file" },
 };
 
 export const languageAndRatingInfo = {

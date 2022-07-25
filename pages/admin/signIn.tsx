@@ -60,7 +60,7 @@ const SignIn = () => {
                 </label>
 
                 <Input
-                  placeholder=""
+                  placeholder="Enter"
                   value={signInForm.email.value}
                   error={signInForm.email.error}
                   name="email"
@@ -78,7 +78,7 @@ const SignIn = () => {
                 </label>
 
                 <Input
-                  placeholder=""
+                  placeholder="Enter"
                   value={signInForm.password.value}
                   error={signInForm.password.error}
                   name="password"
@@ -125,7 +125,7 @@ const SignIn = () => {
                   }}
                   disabled={isLoading}
                 >
-                  submit
+                  log in
                 </button>
               </form>
 

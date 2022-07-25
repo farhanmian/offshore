@@ -146,6 +146,8 @@ const CreateProperty = () => {
       if (resp.status !== 200) return;
       let x = { ...propertyList };
       const data: any = [];
+      let updateMessage = "";
+
       propertyList.properties.map((item: { id: string; status: string }) => {
         if (item.id === id) {
           /// update status and push item
@@ -153,6 +155,8 @@ const CreateProperty = () => {
           updatedData.status =
             item.status === "ENABLED" ? "DISABLED" : "ENABLED";
           data.push(updatedData);
+
+          updateMessage = updatedData.status;
         } else {
           //// push item
           data.push(item);
@@ -160,7 +164,11 @@ const CreateProperty = () => {
       });
       x.properties = data;
       setPropertyList(x);
-      notifySuccess("property updated successfully");
+      notifySuccess(
+        updateMessage === "ENABLED"
+          ? "property successfully enabled"
+          : "property successfully disabled"
+      );
     } catch (err: any) {
       console.log(err);
       notifyError(err.message);

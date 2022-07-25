@@ -87,7 +87,7 @@ const Input: React.FC<{
         <p
           className={`${
             errorStyle ? errorStyle : "pl-2 pt-2 text-red-700"
-          } mt-0.5 text-sm z-20 font-medium absolute -bottom-6 left-0`}
+          } mt-0.5 text-sm z-20 font-medium absolute -bottom-6 left-0 capitalize`}
         >
           {error}
         </p>

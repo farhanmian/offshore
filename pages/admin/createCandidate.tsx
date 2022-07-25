@@ -16,6 +16,7 @@ import FewMoreQuestionsForm from "../../components/partials/FewMoreQuestionsForm
 import { useAppContext } from "../../store/context/AppContext";
 import { stringify } from "querystring";
 import TextArea from "../../components/partials/TextArea";
+import NextLink from "next/link";
 
 const CandidateInfoCard: React.FC<{
   skillName: string;
@@ -363,9 +364,11 @@ const CreateCandidate = () => {
           <div className="flex items-center justify-between mb-5">
             <HeadingPrimary heading="Candidate Information" />
 
-            <a className="text-secondary-main text-sm font-bold">
-              Go to Properties Page
-            </a>
+            <NextLink href="/admin/createProperty">
+              <a className="text-secondary-main text-sm font-bold">
+                Go to Properties Page
+              </a>
+            </NextLink>
           </div>
 
           {/* candidate info and form container */}

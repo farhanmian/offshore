@@ -425,7 +425,10 @@ const CandidateInfo: React.FC<{
                 </span>
               </span>
               {!appliedCandidateData.properties.find((item) => {
-                if (item.name.includes(applyForm.languages[0].language))
+                if (
+                  applyForm.languages.length > 0 &&
+                  item.name.includes(applyForm.languages[0].language)
+                )
                   return true;
               }) ? (
                 <a

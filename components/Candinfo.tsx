@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { Fragment, useEffect } from "react";
 import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -80,44 +81,10 @@ const Candinfo = () => {
   } = useAuthState();
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
-  const [skillListData, setSkillListData] = useState<any>([]);
+  const [fileName, setFileName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  // fetching skill and properties data and updating state
-  useEffect(() => {
-    const fetchSkillData = async () => {
-      try {
-        const resp: any = await Client.getAllSkillsClient();
-        if (resp.status !== 200) {
-          setSkillListData([]);
-          return;
-        }
-        const data = (resp.data.filter = resp.data.filter(
-          (item: { status: string }) => item.status === "ENABLED"
-        ));
-        setSkillListData(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchSkillData();
-  }, []);
-
-  const skillChangeHandler = (
-    e: { name: string; id: string },
-    type?: string
-  ) => {
-    const data: any = {
-      target: { name: "skillName", value: e.name, id: e.id },
-    };
-    const typeData: any = {
-      target: { name: "type", value: type, id: e.id },
-    };
-    //// update local skill form
-    handleCandidateSkillForm(data);
-    handleCandidateSkillForm(typeData);
-  };
   const addSkillHandler = (e: React.FormEvent) => {
     let x = { ...applyForm };
     e.preventDefault();
@@ -170,15 +137,7 @@ const Candinfo = () => {
 
       const data = extractlanguageAndRatingForm();
 
-      const alreadyExist = x.languages
-        .filter((item) => item.language === data.language)
-        .pop();
-
-      if (alreadyExist) {
-        throw new Error("Language already exist!");
-      }
-
-      if (x.languages[0].language.length === 0) {
+      if (x.languages.length === 0 || x.languages[0].language.length === 0) {
         x.languages = [data];
       } else {
         x.languages.push(data);
@@ -203,14 +162,9 @@ const Candinfo = () => {
     x.skills.map((item) => {
       if (item.skillName === e) {
         let data;
-        if (item.type.includes("ADDITIONAL")) {
-          data = {
-            ...item,
-            type: isChecked ? "MAIN/ADDITIONAL" : "OTHER/ADDITIONAL",
-          };
-        } else {
-          data = { ...item, type: isChecked ? "MAIN" : "OTHER" };
-        }
+
+        data = { ...item, type: isChecked ? "MAIN" : "OTHER" };
+
         updatedSkills.push(data);
       } else {
         updatedSkills.push(item);
@@ -230,6 +184,7 @@ const Candinfo = () => {
       setIsLoading(false);
       notifySuccess("Your application successfully submitted");
       clearApplyForm();
+      router.push("/");
     } catch (err: any) {
       console.log(err);
       notifyError(err.message);
@@ -241,6 +196,31 @@ const Candinfo = () => {
   applyForm.skills.map((item) => {
     item.type === "MAIN" && mainSkills.push(item);
   });
+
+  const toBase64 = (file: any) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e: any) => {
+        // setImgUrl(e.target.result);
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("file", e);
+    if (e.target.files) {
+      const file: any = e.target.files[0];
+
+      toBase64(file).then((res) => {
+        const cvData: any = { target: { name: "cv", value: res } };
+        handleApplyForm(cvData);
+        console.log("file", file.name);
+        setFileName(file.name);
+      });
+    }
+  };
 
   return (
     <Fragment>
@@ -329,6 +309,7 @@ const Candinfo = () => {
                     return (
                       <CandidateInfoCard
                         onMarkMain={(e) => {
+                          console.log("checkbox", e);
                           markMainSkillHandler(item.skillName, e);
                         }}
                         onDelete={() => {
@@ -437,31 +418,45 @@ const Candinfo = () => {
             </form>
 
             {/* language and rating list container */}
-            <div className="py-4 grid grid-cols-4 gap-5 px-5 rounded bg-white mb-7.5">
+            <>
+              <div
+                className={`py-4 grid grid-cols-4 gap-5 px-5 rounded bg-white ${
+                  applyForm.languages.length > 0 &&
+                  applyForm.languages[0].language.length > 0
+                    ? ""
+                    : "mb-7.5"
+                }`}
+              >
+                {applyForm.languages.length > 0 &&
+                applyForm.languages[0].language.length > 0 ? (
+                  applyForm.languages.map(
+                    (item: { language: string; rating: string }, i) => {
+                      return (
+                        <LanguageItemContainer
+                          key={i}
+                          language={item.language}
+                          rating={item.rating}
+                          onRemove={() => {
+                            removeLanguageHandler(
+                              applyForm.languages.indexOf(item)
+                            );
+                          }}
+                        />
+                      );
+                    }
+                  )
+                ) : (
+                  <p className="text-center mt-5 font-bold text-sm col-span-full">
+                    No Language Added!
+                  </p>
+                )}
+              </div>
               {applyForm.languages.length > 0 &&
-              applyForm.languages[0].language.length > 0 ? (
-                applyForm.languages.map(
-                  (item: { language: string; rating: string }, i) => {
-                    return (
-                      <LanguageItemContainer
-                        key={i}
-                        language={item.language}
-                        rating={item.rating}
-                        onRemove={() => {
-                          removeLanguageHandler(
-                            applyForm.languages.indexOf(item)
-                          );
-                        }}
-                      />
-                    );
-                  }
-                )
-              ) : (
-                <p className="text-center mt-5 font-bold text-sm col-span-full">
-                  No Language Added!
-                </p>
-              )}
-            </div>
+                applyForm.languages[0].language.length > 0 && (
+                  <a className="text-sm mb-7.5">Clear All</a>
+                )}
+            </>
+            <br />
 
             <label className="inline-block font-bold text-sm mb-3">
               Overall experiance in years
@@ -483,7 +478,7 @@ const Candinfo = () => {
             </label>
             <Input
               disabled={isLoading}
-              placeholder="Notice Period In Days (eg: 15)"
+              placeholder="Notice Period"
               containerClassName="w-full bg-white mb-7.5"
               className="px-5"
               name="noticePeriod"
@@ -503,13 +498,28 @@ const Candinfo = () => {
         />
 
         <div className="flex gap-5 justify-end mt-10">
-          <ButtonSecondary
-            className="px-7 h-10"
-            type="button"
-            disabled={isLoading}
-          >
-            Upload your CV
-          </ButtonSecondary>
+          <div className="relative">
+            <input
+              className="absolute w-full h-full opacity-0"
+              type="file"
+              onChange={onFileChange}
+              name="cv"
+            />
+            <ButtonSecondary
+              className="px-7 h-10"
+              type="button"
+              disabled={isLoading}
+            >
+              Upload your CV
+            </ButtonSecondary>
+            <div className="mt-1 text-xs font-semibold justify-center flex">
+              {fileName && <p className="text-secondary-main">{fileName}</p>}
+              {applyForm.cv.error.length > 0 && (
+                <p className="text-red-600">{applyForm.cv.error}</p>
+              )}
+            </div>
+          </div>
+
           <ButtonSecondary
             className="h-10 w-40"
             type="submit"
