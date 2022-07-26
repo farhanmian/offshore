@@ -66,7 +66,6 @@ const Candidate: React.FC<{
         item.name === "Overall Experience"
     )
     .pop();
-  console.log("experience data", experience);
 
   return (
     <li
@@ -78,7 +77,11 @@ const Candidate: React.FC<{
 
       <div className="flex justify-between items-center relative z-10">
         <div className="w-full py-2 text-white">
-          <h2 className="font-bold">{employeeNumber}</h2>
+          <h2 className="font-bold">
+            {employeeNumber.length < 15
+              ? employeeNumber
+              : `${employeeNumber.slice(0, 14)}...`}
+          </h2>
           {experience && <p className="text-sm">{experience.value} years</p>}
         </div>
         <button onClick={() => onToggleCandidateToHiringList(id)}>

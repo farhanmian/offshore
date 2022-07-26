@@ -46,9 +46,14 @@ const CandidateCard: React.FC<{
   statusLoading,
 }) => {
   const router = useRouter();
+
   return (
     <div className="grid grid-cols-6 h-20 items-center justify-between text-black font-medium">
-      <p>{candidateNo}</p>
+      <p>
+        {candidateNo.trim().length < 15
+          ? candidateNo
+          : `${candidateNo.slice(0, 14)}...`}
+      </p>
       <p>{title}</p>
       <p className="col-span-3">
         {skills.map((item: { name: string }, i) => {
@@ -368,13 +373,6 @@ const Dashboard: React.FC<{
           <div className="bg-gray6 py-5 px-7.5">
             {/* options */}
             <div className="flex mb-5">
-              {/* <Input
-                placeholder="Skills"
-                name="skill"
-                width="w-60"
-                containerClassName="mr-5 bg-white"
-                handleForm={searchHandler}
-              /> */}
               <div className="w-60 mr-5">
                 {/* <Dropdown placeholder="Skills" dataList={skillsData} handleForm={} /> */}
                 <Dropdown

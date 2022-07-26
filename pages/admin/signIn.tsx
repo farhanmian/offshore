@@ -52,7 +52,7 @@ const SignIn = () => {
             <div className="bg-screen p-15 flex items-center justify-between w-full rounded-2xl">
               {/* form */}
               <form
-                className="text-dark font-semibold flex flex-col"
+                className="text-dark font-semibold flex flex-col w-2/5"
                 onSubmit={formSubmitHandler}
               >
                 <label htmlFor="email" className="mb-2 text-xs">
@@ -87,7 +87,7 @@ const SignIn = () => {
                   handleForm={handleSignInForm}
                   id="password"
                   containerClassName={`${
-                    signInForm.password.error.length === 0 ? "mb-5" : "mb-10"
+                    signInForm.password.error.length === 0 ? "mb-5" : "mb-12"
                   } bg-white`}
                   disabled={isLoading}
                 />
@@ -95,25 +95,6 @@ const SignIn = () => {
                 <a className="text-primary-main mb-3 w-max ml-auto text-xs">
                   Forgot Password?
                 </a>
-
-                {/* checkbox */}
-                <div className="mb-5 flex w-max items-center">
-                  <input
-                    id="checkbox"
-                    type="checkbox"
-                    className="mr-3 h-5 w-5 input"
-                    // checked={isChecked}
-                    // onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    //   setIsChecked(e.target.checked);
-                    // }}
-                  />
-                  <label
-                    htmlFor="checkbox"
-                    className="cursor-pointer text-sm font-normal outline-none capitalize text-active"
-                  >
-                    if sum dolor sit amet, consectetur adipiscing elit, sed.
-                  </label>
-                </div>
 
                 <button
                   className={`uppercase text-white rounded px-2.5 h-10 drop-shadow-md hover:shadow-md ${

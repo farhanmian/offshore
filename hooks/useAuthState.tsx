@@ -55,19 +55,31 @@ const useAuthState = () => {
       name !== "cv" &&
       name !== "language" &&
       name !== "password" &&
+      name !== "message" &&
+      name !== "experience" &&
+      name !== "overallExperience" &&
+      name !== "aboutInfo" &&
+      name !== "additionalInfo" &&
       /[^a-zA-Z0-9 ]/.test(value)
     ) {
       error = "Entered value must not be a special character!";
     }
     if (name === "email") {
       if (value.trim().length === 0) {
-        error = "Email must not be empty!";
+        error = "this field must not be empty!";
       }
     } else if (name === "password") {
       if (value.trim().length === 0) {
         error = "Password must not be empty!";
       } else if (value.trim().length < 8) {
         error = "Minimum character limit is 8";
+      } else if (
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
+          value
+        )
+      ) {
+        error =
+          "Password must include one small, one capital and one special character!";
       } else if (value.trim().length > 20) {
         error = "Maximum character limit is 20";
       }
@@ -88,6 +100,8 @@ const useAuthState = () => {
         error = "Must be a number";
       } else if (name === "experience" && +value >= 70) {
         error = "Enter a valid Experience";
+      } else if (name === "experience" && /[^a-zA-Z0-9. ]/.test(value)) {
+        error = "experience cannot contain special characters!";
       } else if (+value < 0) {
         error = "Entered value cannot be less than 0!";
       } else if (name === "employeeNumber" && +value === 0) {
@@ -138,7 +152,7 @@ const useAuthState = () => {
     } else if (name === "skillName") {
       if (value.trim().length === 0) {
         error = "Skill name must not be empty!";
-      } else if (/[^a-zA-Z0-9. ]/.test(value)) {
+      } else if (/[^a-zA-Z0-9.+ ]/.test(value)) {
         error = "Skill name must not contain special characters!";
       } else if (value.trim().length > 30) {
         error = "Maximum character limit is 30";
@@ -166,6 +180,8 @@ const useAuthState = () => {
         error = "Minimum character limit is 2";
       } else if (/\d/.test(value)) {
         error = "This field must not be a number!";
+      } else if (/[^a-zA-Z0-9 ]/.test(value)) {
+        error = "Language must not special character!";
       }
     } else if (name === "rating") {
       if (value.trim().length === 0) {
@@ -178,6 +194,8 @@ const useAuthState = () => {
     } else if (name === "overallExperience") {
       if (value.trim().length === 0) {
         error = "Field must not be empty!";
+      } else if (/[^0-9. ]/.test(value)) {
+        error = "Experience cannot contain special characters!";
       } else if (+value > 70) {
         error = "Enter a valid Experience";
       } else if (+value < 0) {
@@ -798,6 +816,12 @@ const useAuthState = () => {
       ) {
         throw new Error("Please add a Skill!");
       }
+      if (
+        (x.properties.length > 0 && x.properties[0].name.length === 0) ||
+        x.properties.length === 0
+      ) {
+        throw new Error("Please add a Property!");
+      }
 
       console.log("candidate FOrm Data---", data);
       let resp: any;
@@ -1024,19 +1048,12 @@ const useAuthState = () => {
       let x = { ...candidateForm };
 
       Object.keys(x).map((key) => {
-        if (
-          key === "employeeNumber" ||
-          key === "title" ||
-          key === "aboutInfo" ||
-          key === "terms" ||
-          key === "fullTimeJob" ||
-          key === "partTimeJob" ||
-          key === "havePc" ||
-          key === "okWithWorking8To1"
-        ) {
-          x[key].value = resp.data[key];
-        } else if (key === "skills" || key === "properties") {
-          if (key === "skills") {
+        const mainKey = key as keyof typeof candidateForm;
+
+        if (mainKey !== "skills" && mainKey !== "properties") {
+          x[mainKey].value = resp.data[mainKey];
+        } else {
+          if (mainKey === "skills") {
             const skillData: any = [];
             resp.data.skills.map((item: any) => {
               const data = {
@@ -1048,9 +1065,9 @@ const useAuthState = () => {
               };
               skillData.push(data);
             });
-            x[key] = skillData;
+            x[mainKey] = skillData;
           } else {
-            x[key] = resp.data[key];
+            x[mainKey] = resp.data[mainKey];
           }
         }
       });

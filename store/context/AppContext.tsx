@@ -90,8 +90,6 @@ const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
   }, [router.pathname]);
 
-  console.log("appliedCandidateCount", appliedCandidateCount);
-
   // useEffect(() => {
   //   console.log("router", router.pathname);
   //   if (

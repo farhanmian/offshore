@@ -46,7 +46,7 @@ export default function SearchBar({ className }: any) {
   return (
     <div className={className ? className : "relative w-80"}>
       <Input
-        placeholder="Search by Candidate No."
+        placeholder="Search by Skill"
         width="w-full"
         icon={<Search />}
         shadow

@@ -34,6 +34,7 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
       // setting new filter
       state.insertAt(0, newFilter);
     }
+    console.log("------------isExist", isExist);
     setSelectedSkill(null);
   };
 
