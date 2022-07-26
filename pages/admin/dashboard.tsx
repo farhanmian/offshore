@@ -33,6 +33,7 @@ const CandidateCard: React.FC<{
   activeStatus: string;
   onDelete: () => void;
   loading: boolean;
+  statusLoading: string;
 }> = ({
   candidateNo,
   title,
@@ -42,6 +43,7 @@ const CandidateCard: React.FC<{
   activeStatus,
   onDelete,
   loading,
+  statusLoading,
 }) => {
   const router = useRouter();
   return (
@@ -55,11 +57,19 @@ const CandidateCard: React.FC<{
       </p>
 
       <div className="flex items-center justify-self-end col-end-7">
-        <OnOffBtn
-          className="mr-[18px]"
-          status={activeStatus}
-          onChangeActiveStatus={onChangeActiveStatus}
-        />
+        {statusLoading !== id ? (
+          <OnOffBtn
+            className={`mr-[18px] ${
+              statusLoading ? "pointer-events-none" : ""
+            }`}
+            status={activeStatus}
+            onChangeActiveStatus={onChangeActiveStatus}
+          />
+        ) : (
+          <div className="w-10 mr-[18px]">
+            <LoadingSpinner spinnerClassName="h-4 w-4 m-auto" />
+          </div>
+        )}
         <span className="mr-[18px] icon" onClick={onDelete}>
           {!loading ? (
             <Delete />
@@ -98,6 +108,11 @@ const Dashboard: React.FC<{
   const [totalPages, setTotalPages] = useState(1);
   const [deleteCandidateLoading, setDeleteCandidateLoading] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [activeStatusLoading, setActiveStatusLoading] = useState("");
+  const [skillsData, setSkillsData] = useState<
+    { name: string; type: string; id: string }[]
+  >([]);
+  const [searchValue, setSearchValue] = useState("");
 
   console.log("totalPages", totalPages);
 
@@ -145,7 +160,21 @@ const Dashboard: React.FC<{
   }, [page, candidatesListData]);
 
   // fetching skills
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const res = await User.getAllSkills();
+        if (res.status !== 200) {
+          throw new Error(res);
+        }
+
+        setSkillsData(res.data);
+      } catch (err: { message: string } | any) {
+        notifyError(err.message);
+      }
+    };
+    fetchSkills();
+  }, []);
 
   const searchHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -185,6 +214,8 @@ const Dashboard: React.FC<{
   };
 
   const changeActiveStatusHandler = async (id: string) => {
+    if (activeStatusLoading) return;
+    setActiveStatusLoading(id);
     try {
       const resp: any = await User.updateCandidateStatus(id);
       console.log("updates candidate status", resp);
@@ -213,15 +244,19 @@ const Dashboard: React.FC<{
       x.count = x.count - 1;
       x.candidates = data;
 
-      setTimeout(() => {
-        setCandidatesListData(x);
-        notifySuccess(
-          status === "ENABLED" ? "Profile Enabled" : "Profile Disabled"
-        );
-      }, 300);
+      setCandidatesListData(x);
+      notifySuccess(
+        status === "ENABLED" ? "Profile Enabled" : "Profile Disabled"
+      );
+
+      setActiveStatusLoading("");
+      // setTimeout(() => {
+
+      // }, 300);
     } catch (err: any) {
       console.log(err);
       notifyError(err.message);
+      setActiveStatusLoading("");
     }
   };
 
@@ -258,6 +293,15 @@ const Dashboard: React.FC<{
     if (page === 1) return;
     router.push(`${router.pathname}?page=${page - 1}`);
     setPage(page - 1);
+  };
+
+  const skillChangeHandler = (e: { name: string; id: string }) => {
+    const data: any = {
+      target: { name: "skill", value: e.name, id: e.id },
+    };
+    console.log("onChange", data);
+    setSearchValue(data.target.value);
+    searchHandler(data);
   };
 
   return (
@@ -324,16 +368,27 @@ const Dashboard: React.FC<{
           <div className="bg-gray6 py-5 px-7.5">
             {/* options */}
             <div className="flex mb-5">
-              <Input
+              {/* <Input
                 placeholder="Skills"
                 name="skill"
                 width="w-60"
                 containerClassName="mr-5 bg-white"
                 handleForm={searchHandler}
-              />
-              {/* <div className="w-56 mr-5">
-                <Dropdown placeholder="Skills" />
-              </div> */}
+              /> */}
+              <div className="w-60 mr-5">
+                {/* <Dropdown placeholder="Skills" dataList={skillsData} handleForm={} /> */}
+                <Dropdown
+                  placeholder="Skills"
+                  // error={candidatePropertyForm.name.error}
+                  linkText="Create Property"
+                  disabled={isLoading}
+                  link={"/admin/createProperty"}
+                  dataList={skillsData && skillsData}
+                  onChange={skillChangeHandler}
+                  handleForm={(e) => setSearchValue(e.target.value)}
+                  value={searchValue}
+                />
+              </div>
 
               <Input
                 placeholder="Search by Candidate No."
@@ -389,12 +444,13 @@ const Dashboard: React.FC<{
                               candidateNo={item.employeeNumber}
                               title={item.title}
                               skills={item.skills}
+                              statusLoading={activeStatusLoading}
                             />
                           )
                         );
                       }
                     )
-                  ) : (
+                  ) : showActiveCandidates ? (
                     <div className="flex items-center mt-5 font-semibold text-sm justify-center gap-1">
                       <p>No Candidates Found!</p>
                       <NextLink href={"/admin/createCandidate"}>
@@ -402,6 +458,10 @@ const Dashboard: React.FC<{
                           Add Candidates
                         </a>
                       </NextLink>
+                    </div>
+                  ) : (
+                    <div className="flex items-center mt-5 font-semibold text-sm justify-center gap-1">
+                      <p>No Disabled Candidates Found!</p>
                     </div>
                   )
                 ) : (
@@ -457,19 +517,18 @@ export const getServerSideProps = async (context: any) => {
     headers: header,
   });
 
-  const data = await res.json();
-
   if (res.status !== 200) {
     return {
       props: {
         candidatesList: { candidates: [], counts: 0 },
       },
     };
-  } else {
-    return {
-      props: {
-        candidatesList: data,
-      },
-    };
   }
+  const data = await res.json();
+
+  return {
+    props: {
+      candidatesList: data,
+    },
+  };
 };

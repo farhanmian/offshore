@@ -22,6 +22,7 @@ const SkillCard: React.FC<{
   onChangeActiveStatus: () => void;
   loading: boolean;
   type: string;
+  statusLoading: string;
 }> = ({
   skillName,
   candidatesHired,
@@ -32,6 +33,7 @@ const SkillCard: React.FC<{
   onChangeActiveStatus,
   loading,
   type,
+  statusLoading,
 }) => {
   const router = useRouter();
 
@@ -60,12 +62,20 @@ const SkillCard: React.FC<{
           {type.toLocaleLowerCase()}
         </p>
         <div className="flex items-center">
-          <OnOffBtn
-            className="mr-[18px]"
-            status={!loading ? activeStatus : "DISABLED"}
-            onChangeActiveStatus={changeStatusHandler}
-          />
-          <span className="mr-[18px] icon" onClick={onDelete}>
+          {statusLoading !== id ? (
+            <OnOffBtn
+              className={`mr-[18px] ${
+                statusLoading ? "pointer-events-none" : ""
+              }`}
+              status={!loading ? activeStatus : "DISABLED"}
+              onChangeActiveStatus={changeStatusHandler}
+            />
+          ) : (
+            <div className="w-10 mr-[18px]">
+              <LoadingSpinner spinnerClassName="h-4 w-4 m-auto" />
+            </div>
+          )}
+          <span className="mr-[18px] icon pointer" onClick={onDelete}>
             {!loading ? (
               <Delete />
             ) : (
@@ -94,6 +104,7 @@ const AllSkills = () => {
   const [showActiveSkills, setShowActiveSkills] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteSkillLoading, setDeleteSkillLoading] = useState("");
+  const [activeStatusLoading, setActiveStatusLoading] = useState("");
 
   useEffect(() => {
     const fetchSkillData = async () => {
@@ -139,6 +150,8 @@ const AllSkills = () => {
   };
 
   const changeActiveStatusHandler = async (id: string) => {
+    if (activeStatusLoading) return;
+    setActiveStatusLoading(id);
     try {
       const resp: any = await User.updateSkillStatus(id);
       console.log("updates skill status", resp);
@@ -157,13 +170,14 @@ const AllSkills = () => {
         }
       });
 
-      setTimeout(() => {
-        setSkillDataList(data);
-        notifySuccess("Skill update Successfully");
-      }, 300);
+      setSkillDataList(data);
+      notifySuccess("Skill update Successfully");
+
+      setActiveStatusLoading("");
     } catch (err: any) {
       console.log(err);
       notifyError(err.message);
+      setActiveStatusLoading("");
     }
   };
 
@@ -248,6 +262,7 @@ const AllSkills = () => {
                           candidatesHired={item.candidatesHired}
                           icon={item.iconUrl ? item.iconUrl : noImgFound}
                           type={item.type}
+                          statusLoading={activeStatusLoading}
                         />
                       )
                     );

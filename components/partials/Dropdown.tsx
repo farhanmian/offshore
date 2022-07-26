@@ -4,12 +4,12 @@ import ArrowDown from "../icons/ArrowDown";
 import Input from "./Input";
 
 const Dropdown: React.FC<{
-  dataList: [];
+  dataList: { name: string; id: string; type: string }[];
   onChange: (e: { name: string; id: string }, type?: string) => void;
   linkText: string;
   link: string;
   placeholder: string;
-  error: string;
+  error?: string;
   inputName?: string;
   value: string;
   disabled?: boolean;

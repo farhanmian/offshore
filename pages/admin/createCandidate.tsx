@@ -17,6 +17,7 @@ import { useAppContext } from "../../store/context/AppContext";
 import { stringify } from "querystring";
 import TextArea from "../../components/partials/TextArea";
 import NextLink from "next/link";
+import LoadingSpinner from "../../components/partials/Loading/LoadingSpinner";
 
 const CandidateInfoCard: React.FC<{
   skillName: string;
@@ -254,7 +255,7 @@ const CreateCandidate = () => {
     try {
       const data: { name: string; value: string } =
         extractCandidatePropertyForm();
-      console.log(data);
+      console.log("propertydata", data);
 
       const doesInclude = propertyListData.properties
         .filter((item: { name: string }) => item.name === data.name)
@@ -262,6 +263,12 @@ const CreateCandidate = () => {
 
       if (!doesInclude) {
         throw new Error("Select a valid Property!");
+      }
+      if (data.name === "Age" || data.name === "age") {
+        const value = parseInt(data.value);
+        if (value < 18) {
+          throw new Error("Age cannot smaller than 18");
+        }
       }
 
       if (x.properties.length === 0 || x.properties[0].name.length === 0) {
@@ -445,7 +452,7 @@ const CreateCandidate = () => {
 
                 <Input
                   disabled={isLoading}
-                  placeholder="Experience."
+                  placeholder="Experience"
                   // icon={<Search />}
                   width="w-full"
                   containerClassName="bg-white mr-5"
@@ -578,7 +585,7 @@ const CreateCandidate = () => {
 
               <Input
                 disabled={isLoading}
-                placeholder="Enter Value."
+                placeholder="Enter Value"
                 width="w-full"
                 containerClassName="bg-white mr-5"
                 name="value"
@@ -661,6 +668,7 @@ const CreateCandidate = () => {
                 value={candidateForm.terms.value}
                 handleForm={handleCandidateForm}
                 error={candidateForm.terms.error}
+                disabled={isLoading}
               />
             </div>
           </div>
@@ -687,8 +695,17 @@ const CreateCandidate = () => {
           <ButtonPrimary
             className="px-14 h-10 w-40"
             onClick={postCandidateFormHandler}
+            disabled={isLoading}
           >
-            {candidateId ? "Update" : "Submit"}
+            {!isLoading ? (
+              candidateId ? (
+                "Update"
+              ) : (
+                "Submit"
+              )
+            ) : (
+              <LoadingSpinner spinnerClassName="w-5 h-5 m-auto" />
+            )}
           </ButtonPrimary>
         </div>
       </div>

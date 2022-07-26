@@ -105,7 +105,7 @@ const ContactUs = () => {
                 } w-full bg-white`}
                 name="name"
                 error={contactUsForm.name.error}
-                errorStyle="pl-2 pt-2 text-white xl:text-red-700"
+                errorStyle="pl-2 mb-1 text-white xl:text-red-700 text-xs"
                 disabled={isLoading}
                 value={contactUsForm.name.value}
                 handleForm={handleContactUsForm}
@@ -118,7 +118,7 @@ const ContactUs = () => {
                 } w-full bg-white`}
                 name="email"
                 error={contactUsForm.email.error}
-                errorStyle="pl-2 pt-2 text-white xl:text-red-700"
+                errorStyle="pl-2 mb-1 text-white xl:text-red-700 text-xs"
                 disabled={isLoading}
                 value={contactUsForm.email.value}
                 handleForm={handleContactUsForm}
@@ -131,7 +131,7 @@ const ContactUs = () => {
                 } w-full bg-white`}
                 name="phone"
                 error={contactUsForm.phone.error}
-                errorStyle="pl-2 pt-2 text-white xl:text-red-700"
+                errorStyle="pl-2 mb-1 text-white xl:text-red-700 text-xs"
                 disabled={isLoading}
                 value={contactUsForm.phone.value}
                 handleForm={handleContactUsForm}
@@ -144,7 +144,7 @@ const ContactUs = () => {
                 value={contactUsForm.message.value}
                 error={contactUsForm.message.error}
                 disabled={isLoading}
-                errorStyle={"text-white xl:text-red-700"}
+                errorStyle={"text-white xl:text-red-700 text-xs mb-1"}
                 handleForm={handleContactUsForm}
                 className="p-3 w-full resize-none rounded disabled:bg-white"
                 containerClassName={

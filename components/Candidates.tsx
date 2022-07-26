@@ -58,7 +58,15 @@ const Candidate: React.FC<{
   onToggleCandidateToHiringList: (id: string) => void;
   icon: React.ReactNode;
 }> = ({ candidate, onToggleCandidateToHiringList, icon }) => {
-  const { employeeNumber, description, skills, id } = candidate;
+  const { employeeNumber, description, skills, id, properties } = candidate;
+
+  const experience = properties
+    .filter(
+      (item: { name: string; value: string }) =>
+        item.name === "Overall Experience"
+    )
+    .pop();
+  console.log("experience data", experience);
 
   return (
     <li
@@ -71,7 +79,7 @@ const Candidate: React.FC<{
       <div className="flex justify-between items-center relative z-10">
         <div className="w-full py-2 text-white">
           <h2 className="font-bold">{employeeNumber}</h2>
-          <p className="text-sm">+2 years</p>
+          {experience && <p className="text-sm">{experience.value} years</p>}
         </div>
         <button onClick={() => onToggleCandidateToHiringList(id)}>
           {icon}

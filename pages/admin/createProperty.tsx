@@ -18,6 +18,8 @@ const PropertyCard: React.FC<{
   onChangeActiveStatus: () => void;
   activeStatus: string;
   deleteLoading: boolean;
+  statusLoading: string;
+  id: string;
 }> = ({
   propertyName,
 
@@ -25,6 +27,8 @@ const PropertyCard: React.FC<{
   onChangeActiveStatus,
   activeStatus,
   deleteLoading,
+  statusLoading,
+  id,
 }) => {
   const changeStatusHandler = () => {
     if (deleteLoading) return;
@@ -36,11 +40,19 @@ const PropertyCard: React.FC<{
       <p>{propertyName}</p>
 
       <div className="flex items-center">
-        <OnOffBtn
-          status={deleteLoading ? "DISABLED" : activeStatus}
-          className="mr-[18px]"
-          onChangeActiveStatus={changeStatusHandler}
-        />
+        {statusLoading !== id ? (
+          <OnOffBtn
+            status={deleteLoading ? "DISABLED" : activeStatus}
+            className={`mr-[18px] ${
+              statusLoading ? "pointer-events-none" : ""
+            }`}
+            onChangeActiveStatus={changeStatusHandler}
+          />
+        ) : (
+          <div className="w-10 mr-[18px]">
+            <LoadingSpinner spinnerClassName="h-4 w-4 m-auto" />
+          </div>
+        )}
         <span className="mr-[18px] icon" onClick={onDelete}>
           {!deleteLoading ? (
             <Delete />
@@ -66,6 +78,8 @@ const CreateProperty = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [createPropertyLoading, setCreatePropertyLoading] = useState(false);
   const [deletePropertyLoading, setDeletePropertyLoading] = useState("");
+  const [statusLoading, setStatusLoading] = useState("");
+
   const [propertyList, setPropertyList] = useState<{
     properties: [];
     count: number;
@@ -140,6 +154,8 @@ const CreateProperty = () => {
   };
 
   const changeActiveStatusHandler = async (id: string) => {
+    if (statusLoading) return;
+    setStatusLoading(id);
     try {
       const resp: any = await User.updatePropertyStatus(id);
       console.log("updates property status", resp);
@@ -169,9 +185,11 @@ const CreateProperty = () => {
           ? "property successfully enabled"
           : "property successfully disabled"
       );
+      setStatusLoading("");
     } catch (err: any) {
       console.log(err);
       notifyError(err.message);
+      setStatusLoading("");
     }
   };
 
@@ -240,6 +258,8 @@ const CreateProperty = () => {
                         }}
                         key={i}
                         propertyName={item.name}
+                        statusLoading={statusLoading}
+                        id={item.id}
                       />
                     );
                   }

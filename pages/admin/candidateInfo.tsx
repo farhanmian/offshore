@@ -166,9 +166,7 @@ const CandidateInfo: React.FC<{
     } else if (name === "overallExperience" || name === "noticePeriod") {
       const data = {
         name: name,
-        value: `${applyForm[name].value} ${
-          name === "noticePeriod" ? "days" : "years"
-        }`,
+        value: applyForm[name].value,
       };
 
       if (data.name.trim().length === 0) return;

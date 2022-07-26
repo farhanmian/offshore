@@ -52,7 +52,7 @@ export default function Header() {
       try {
         const res = await User.getAppliedCandidates(8, 1);
         const appliedCount = res.data.count;
-        console.log("applied count", appliedCount);
+
         if (res.status !== 200) {
           throw new Error(res);
         }

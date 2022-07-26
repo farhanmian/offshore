@@ -53,6 +53,8 @@ const useAuthState = () => {
       name !== "email" &&
       name !== "skillName" &&
       name !== "cv" &&
+      name !== "language" &&
+      name !== "password" &&
       /[^a-zA-Z0-9 ]/.test(value)
     ) {
       error = "Entered value must not be a special character!";
@@ -72,6 +74,8 @@ const useAuthState = () => {
     } else if (name === "name") {
       if (value.trim().length === 0) {
         error = "Name must not be empty!";
+      } else if (/\d/.test(value)) {
+        error = "cannot use numbers!";
       } else if (/[^a-zA-Z0-9 ]/.test(value)) {
         error = "cannot use special characters!";
       } else if (value.trim().length > 30) {
@@ -94,6 +98,8 @@ const useAuthState = () => {
     } else if (name === "title") {
       if (value.trim().length === 0) {
         error = "Title must not be empty!";
+      } else if (/\d/.test(value)) {
+        error = "Title must not contain numbers!";
       } else if (/[^a-zA-Z0-9 ]/.test(value)) {
         error = "Title must not contain special characters!";
       } else if (value.trim().length < 2) {
@@ -158,7 +164,7 @@ const useAuthState = () => {
         error = "This field must not be empty!";
       } else if (value.trim().length < 2) {
         error = "Minimum character limit is 2";
-      } else if (!isNaN(+value)) {
+      } else if (/\d/.test(value)) {
         error = "This field must not be a number!";
       }
     } else if (name === "rating") {
@@ -273,6 +279,7 @@ const useAuthState = () => {
     if (name !== "name" && name !== "value") return;
     x[name].value = e.target.value;
     x[name].error = handleInputValidation(e);
+
     setCandidatePropertyForm(x);
   };
   const handleCandidateForm = (
