@@ -72,7 +72,13 @@ const CandidateCard: React.FC<{
                     unoptimized
                     width={"100%"}
                     height={"100%"}
-                    src={item.iconUrl ? item.iconUrl : noImgFoundBase64}
+                    src={
+                      item.iconUrl
+                        ? item.iconUrl === "iconUrl"
+                          ? noImgFoundBase64
+                          : item.iconUrl
+                        : noImgFoundBase64
+                    }
                     alt="skill-img"
                   />
                 </div>
