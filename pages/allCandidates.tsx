@@ -67,7 +67,11 @@ const CandidateCard: React.FC<{
                 >
                   <Image
                     loader={() =>
-                      item.iconUrl ? item.iconUrl : noImgFoundBase64
+                      item.iconUrl
+                        ? item.iconUrl === "iconUrl"
+                          ? noImgFoundBase64
+                          : item.iconUrl
+                        : noImgFoundBase64
                     }
                     unoptimized
                     width={"100%"}
