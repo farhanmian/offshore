@@ -1,16 +1,32 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
-import ExperienceList from "./ExperienceList";
-import SettingsIcon from "./icons/SettingsIcon";
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useState } from 'react';
+import ExperienceList from './ExperienceList';
+import SettingsIcon from './icons/SettingsIcon';
 
 export default function ExperienceDialog({
   selectedExperience,
   setSelectedExperience,
   experiences,
+  state,
+  data,
+  stateData,
 }: any) {
   let [isOpen, setIsOpen] = useState(false);
 
   function closeModal() {
+    const newFilter: any = {
+      skill: data.skill,
+      experience: selectedExperience,
+    };
+
+    const isExist: any = stateData.findIndex((data: any) => data.skill.id === newFilter.skill.id);
+
+    if (isExist >= 0) {
+      state.updateAt(isExist, newFilter);
+    } else {
+      state.insertAt(0, newFilter);
+    }
+
     setIsOpen(false);
   }
 

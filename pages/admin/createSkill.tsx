@@ -192,9 +192,9 @@ const CreateSkill = () => {
                 width="w-auto"
                 rounded="rounded-lg"
                 containerClassName="px-5 bg-white"
-                name="name"
-                error={skillForm.name.error}
-                value={skillForm.name.value}
+                name="skillName"
+                error={skillForm.skillName.error}
+                value={skillForm.skillName.value}
                 handleForm={handleSkillForm}
                 disabled={isLoading}
               />

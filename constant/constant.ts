@@ -8,7 +8,7 @@ export const signInInfo = {
 };
 
 export const skillFormInfo = {
-  name: { ...basicInputTemplate },
+  skillName: { ...basicInputTemplate },
   iconUrl: { ...basicInputTemplate, value: noImgFoundBase64 },
   type: { ...basicInputTemplate, value: "OTHER" }, /// skill type (MAIN or OTHER)
   // candidatesHired: { ...basicInputTemplate, value: "hello" }, ///optional,
@@ -106,10 +106,19 @@ export const applyFormInfo = {
   partTimeJob: { ...basicInputTemplate, value: "yes" },
   havePc: { ...basicInputTemplate, value: "PC" },
   okWithWorking8To1: { ...basicInputTemplate, value: "yes" },
-  cv: { ...basicInputTemplate, type: "file" },
+  CV: { ...basicInputTemplate, type: "file" },
 };
 
 export const languageAndRatingInfo = {
   language: { ...basicInputTemplate },
   rating: { ...basicInputTemplate },
+};
+
+export const forgotPasswordInfo = {
+  email: { ...basicInputTemplate },
+};
+
+export const resetPasswordInfo = {
+  password: { ...basicInputTemplate },
+  confirmPassword: { ...basicInputTemplate },
 };

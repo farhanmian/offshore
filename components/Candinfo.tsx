@@ -184,7 +184,9 @@ const Candinfo = () => {
       setIsLoading(false);
       notifySuccess("Your application successfully submitted");
       clearApplyForm();
-      router.push("/");
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     } catch (err: any) {
       console.log(err);
       notifyError(err.message);
@@ -214,7 +216,7 @@ const Candinfo = () => {
       const file: any = e.target.files[0];
 
       toBase64(file).then((res) => {
-        const cvData: any = { target: { name: "cv", value: res } };
+        const cvData: any = { target: { name: "CV", value: res } };
         handleApplyForm(cvData);
         console.log("file", file.name);
         setFileName(file.name);
@@ -503,7 +505,7 @@ const Candinfo = () => {
               className="absolute w-full h-full opacity-0"
               type="file"
               onChange={onFileChange}
-              name="cv"
+              name="CV"
             />
             <ButtonSecondary
               className="px-7 h-10"
@@ -514,8 +516,8 @@ const Candinfo = () => {
             </ButtonSecondary>
             <div className="mt-1 text-xs font-semibold justify-center flex">
               {fileName && <p className="text-secondary-main">{fileName}</p>}
-              {applyForm.cv.error.length > 0 && (
-                <p className="text-red-600">{applyForm.cv.error}</p>
+              {applyForm.CV.error.length > 0 && (
+                <p className="text-red-600">{applyForm.CV.error}</p>
               )}
             </div>
           </div>

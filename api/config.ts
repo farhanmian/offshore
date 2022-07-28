@@ -19,11 +19,13 @@ export const URLS = {
   DELETE_CANDIDATE: BASE_URL + "/user/delete/candidate",
   DELETE_APPLIED_CANDIDATE: BASE_URL + "/user/delete/applied",
   DELETE_MULTIPLE_APPLIED_CANDIDATES: BASE_URL + "/user/delete/applied",
+  FORGOT_PASSWORD: BASE_URL + "/user/forgot",
+  RESET_PASSWORD: BASE_URL + "/reset",
 
   //// candidate user
   GET_MULTIPLE_CANDIDATES: BASE_URL + "/client/get/multiple",
   GET_ALL_CANDIDATES_CLIENT: BASE_URL + "/client/get/all/candidate",
-  SEARCH_CANDIDATE_BY_EMPLOYEE_NO: BASE_URL + "/client",
+  SEARCH_CANDIDATE_BY_SKILL_NAME: BASE_URL + "/client/candidates",
   GET_CANDIDATE_CLIENT: BASE_URL + "/client/get/candidate",
   APPLY_AS_DEVELOPER: BASE_URL + "/client/apply",
 

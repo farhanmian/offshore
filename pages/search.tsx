@@ -70,6 +70,8 @@ const Search = () => {
     }
   }, [stateData, url]);
 
+  console.log("fetchedCandidates", fetchCandidates);
+
   return (
     <>
       <SearchPanel

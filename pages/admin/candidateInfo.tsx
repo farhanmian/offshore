@@ -165,7 +165,8 @@ const CandidateInfo: React.FC<{
       }
     } else if (name === "overallExperience" || name === "noticePeriod") {
       const data = {
-        name: name,
+        name:
+          name === "overallExperience" ? "Overall Experience" : "Notice Period",
         value: applyForm[name].value,
       };
 
@@ -470,7 +471,9 @@ const CandidateInfo: React.FC<{
               </p>
 
               {!appliedCandidateData.properties.find(
-                (item) => item.name === "overallExperience"
+                (item) =>
+                  item.name === "overallExperience" ||
+                  item.name === "Overall Experience"
               ) ? (
                 <a
                   onClick={() => updateCandidateForm("overallExperience")}
@@ -505,7 +508,8 @@ const CandidateInfo: React.FC<{
               </p>
 
               {!appliedCandidateData.properties.find(
-                (item) => item.name === "noticePeriod"
+                (item) =>
+                  item.name === "noticePeriod" || item.name === "Notice Period"
               ) ? (
                 <a
                   onClick={() => updateCandidateForm("noticePeriod")}

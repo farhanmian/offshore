@@ -6,6 +6,7 @@ import https from "https";
 import {
   ApplyAsDeveloperFormType,
   ContactUsFormType,
+  CreateSkillType,
   SkillFormType,
 } from "../store/types/types";
 import { URLS } from "./config";
@@ -94,12 +95,12 @@ export const User = {
     requests.post(`${URLS.DELETE_MULTIPLE_APPLIED_CANDIDATES}`, data),
 
   //// skill
-  createSkill: (data: SkillFormType) =>
+  createSkill: (data: CreateSkillType) =>
     requests.post(`${URLS.CREATE_SKILL}`, data),
 
   getAllSkills: () => requests.get(`${URLS.GET_ALL_SKILLS}`),
   getSkill: (skillId: string) => requests.get(`${URLS.GET_SKILL}/${skillId}`),
-  updateSkill: (data: SkillFormType, id: string) =>
+  updateSkill: (data: CreateSkillType, id: string) =>
     requests.put(`${URLS.UPDATE_SKILL}/${id}`, data),
   deleteSkill: (id: string) => requests.delete(`${URLS.DELETE_SKILL}/${id}`),
   updateSkillStatus: (id: string) =>
@@ -120,6 +121,10 @@ export const User = {
   updateTerms: (data: any, id: string) =>
     requests.put(`${URLS.UPDATE_TERMS}/${id}`, data),
   deleteTerm: (id: string) => requests.delete(`${URLS.DELETE_TERM}/${id}`),
+  forgotPassword: (data: { email: string }) =>
+    requests.post(`${URLS.FORGOT_PASSWORD}`, data),
+  resetPassword: (data: { password: string }, token: string) =>
+    requests.post(`${URLS.RESET_PASSWORD}/${token}`, data),
 };
 
 export const Client = {
@@ -139,8 +144,8 @@ export const Client = {
   contactUs: (data: ContactUsFormType) =>
     requests.post(`${URLS.CONTACT_US}`, data),
 
-  searchCandidateByEmployeeNo: (employeeNo: string) =>
-    requests.get(`${URLS.SEARCH_CANDIDATE_BY_EMPLOYEE_NO}/${employeeNo}`),
+  searchCandidateBySkillName: (skillName: string) =>
+    requests.get(`${URLS.SEARCH_CANDIDATE_BY_SKILL_NAME}/${skillName}`),
   postEnquiryForm: (data: any) => requests.post(`${URLS.ENQUIRY_FORM}`, data),
 
   // skill user

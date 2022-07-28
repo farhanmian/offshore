@@ -1,4 +1,10 @@
 export type SkillFormType = {
+  skillName: string;
+  type: string;
+  iconUrl: string;
+  candidatesHired: string;
+};
+export type CreateSkillType = {
   name: string;
   type: string;
   iconUrl: string;

@@ -63,7 +63,7 @@ const Candidate: React.FC<{
   const experience = properties
     .filter(
       (item: { name: string; value: string }) =>
-        item.name === "Overall Experience"
+        item.name.toLowerCase() === "overall experience"
     )
     .pop();
 
@@ -82,7 +82,13 @@ const Candidate: React.FC<{
               ? employeeNumber
               : `${employeeNumber.slice(0, 14)}...`}
           </h2>
-          {experience && <p className="text-sm">{experience.value} years</p>}
+          {experience && (
+            <p className="text-sm">
+              {experience.value.includes("years")
+                ? experience.value
+                : `${experience.value} years`}{" "}
+            </p>
+          )}
         </div>
         <button onClick={() => onToggleCandidateToHiringList(id)}>
           {icon}

@@ -128,10 +128,18 @@ export default function Header() {
             }`}
           >
             {router.pathname.includes("admin") &&
-              (appliedCandidateCount > 9 ? "9+" : appliedCandidateCount)}
+              (appliedCandidateCount > 9
+                ? "9+"
+                : appliedCandidateCount < 0
+                ? 0
+                : appliedCandidateCount)}
 
             {!router.pathname.includes("admin") &&
-              (hiringListCount > 9 ? "9+" : hiringListCount)}
+              (hiringListCount > 9
+                ? "9+"
+                : hiringListCount < 0
+                ? 0
+                : hiringListCount)}
           </p>
         </span>
 

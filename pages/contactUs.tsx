@@ -32,7 +32,7 @@ const ContactUs = () => {
       if (resp.status !== 200) {
         throw Error(resp);
       }
-      notifySuccess("Main successfully send");
+      notifySuccess("Mail successfully sent");
       clearContactUsForm();
       setIsLoading(false);
     } catch (err: any) {

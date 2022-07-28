@@ -23,17 +23,23 @@ export default function SearchBar({ className }: any) {
     if (searchValue.trim().length === 0) return;
     setIsLoading(true);
     const fetchCandidates = async () => {
-      const resp = await Client.searchCandidateByEmployeeNo(searchValue); /// search endpoint
-      console.log("nav resp", resp);
-      if (resp.status !== 200) return;
-      setCandidateList(resp.data);
-      setIsLoading(false);
+      try {
+        const resp = await Client.searchCandidateBySkillName(searchValue); /// search endpoint
+        console.log("nav resp", resp);
+        if (resp.status !== 200) {
+          throw new Error(resp);
+        }
+        setCandidateList(resp.data.candidates);
+        setIsLoading(false);
+      } catch (err) {
+        setIsLoading(false);
+      }
     };
     const id = setTimeout(() => {
       fetchCandidates();
     }, 500);
 
-    () => clearTimeout(id);
+    return () => clearTimeout(id);
   }, [searchValue]);
 
   const searchChangeHandler = (

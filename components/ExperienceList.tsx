@@ -1,6 +1,6 @@
-import { Fragment, useState } from "react";
-import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import { Fragment, useState } from 'react';
+import { Listbox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 
 export default function ExperienceList({
   selectedExperience,
@@ -19,7 +19,7 @@ export default function ExperienceList({
           >
             <span className="block truncate">
               {years === 0
-                ? "All"
+                ? 'All'
                 : years === 1
                 ? `${years} year of experience`
                 : `${years} years of experience`}
@@ -40,7 +40,7 @@ export default function ExperienceList({
                   key={experienceIdx}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 mbTab:px-4 pr-4 ${
-                      active ? "bg-primaryBlue text-white" : "text-gray-900"
+                      active ? 'bg-primaryBlue text-white' : 'text-gray-900'
                     }`
                   }
                   value={experience}
@@ -48,10 +48,10 @@ export default function ExperienceList({
                   {({ selected }) => (
                     <>
                       <span
-                        className={`block truncate ${selected ? "font-medium" : "font-normal"}`}
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                       >
                         {experience.years === 0
-                          ? "All"
+                          ? 'All'
                           : experience.years === 1
                           ? `${experience.years} year of experience`
                           : `${experience.years} years of experience`}

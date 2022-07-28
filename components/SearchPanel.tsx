@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PlusIcon } from "@heroicons/react/solid";
-
 import CloseIcon from "./icons/CloseIcon";
 import { SkillType } from "../store/types/types";
 import SearchInput from "./SearchInput";
-import SettingsIcon from "./icons/SettingsIcon";
 import ExperienceDialog from "./ExperienceDialog";
 
 const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
+  const formRef = useRef<HTMLFormElement>(null);
   const experiences = [
     { years: 0 },
     { years: 1 },
@@ -20,25 +19,32 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
   const [selectedSkill, setSelectedSkill] = useState<SkillType | any>(null);
   const [selectedExperience, setSelectedExperience] = useState(experiences[0]);
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     const newFilter: any = {
       skill: selectedSkill,
       experience: selectedExperience,
     };
-    // checking if filter already exist or not
+
     const isExist: any = stateData.findIndex(
-      (data: any) => data.skill.id === newFilter.skill.id
+      (data: any) =>
+        data.skill.id === newFilter.skill.id &&
+        data.experience.years === newFilter.experience.years
     );
-    if (isExist === -1) {
-      // setting new filter
+    if (isExist >= 0) {
+      state.updateAt(isExist, newFilter);
+    } else {
       state.insertAt(0, newFilter);
     }
-    console.log("------------isExist", isExist);
-    setSelectedSkill(null);
+    // setSelectedSkill(null);
   };
 
   useEffect(() => {
+    // const newFilter: any = {
+    //   skill: selectedSkill,
+    //   experience: selectedExperience,
+    // };
+    // state.insertAt(0, newFilter);
+
     fetchCandidates.retry();
   }, [stateData, selectedExperience]);
 
@@ -50,8 +56,12 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
   return (
     <section className="mx-section mbTab:mx-sectionMobile">
       <form
+        ref={formRef}
         className="bg-gray2 rounded-md py-8 px-6 my-8 flex justify-between items-center flex-wrap"
-        onSubmit={(e) => handleSubmit(e)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
       >
         {selectedSkill && (
           <input type="hidden" name="skill" value={selectedSkill?.name} />
@@ -64,7 +74,10 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
           />
         )}
         {/* Search bar */}
-        <SearchInput selected={selectedSkill} setSelected={setSelectedSkill} />
+        <SearchInput
+          selected={selectedSkill}
+          setSelected={(e: { name: string }) => setSelectedSkill(e)}
+        />
         <button
           type="submit"
           className="button-primary cursor-pointer ml-6 mbTab:w-full mbTab:mt-4 mbTab:order-4 flex justify-between items-center"
@@ -91,10 +104,19 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
                   experiences={experiences}
                   selectedExperience={selectedExperience}
                   setSelectedExperience={setSelectedExperience}
+                  state={state}
+                  stateData={stateData}
+                  data={data}
                 />
                 <p className="whitespace-nowrap">
-                  <span>{data.skill.name}</span>
-                  <span className="ml-0.5">({data.experience.years})</span>
+                  <span>
+                    {data.skill.name.length > 18
+                      ? `${data.skill.name.slice(0, 17)}..`
+                      : data.skill.name}
+                  </span>
+                  <span className="ml-0.5">
+                    ({data.experience.years === 0 ? 'all' : data.experience.years})
+                  </span>
                 </p>
                 <button
                   onClick={(e) => {

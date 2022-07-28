@@ -25,6 +25,7 @@ module.exports = {
         neptuneBlue: "#002B72",
         lightGreen: "#0DE516",
         mainOrange: "#FD9000",
+        darkSkyBlue: "#517DC0",
       },
       fontFamily: "Inter",
       fontSize: {

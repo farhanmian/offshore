@@ -1,14 +1,15 @@
-import React from "react";
-import Apple from "../icons/Apple";
-import Facebook from "../icons/Facebook";
-import Google from "../icons/Google";
+import Link from 'next/link';
+import React from 'react';
+import Apple from '../icons/Apple';
+import Facebook from '../icons/Facebook';
+import Google from '../icons/Google';
 
-const linkData = [
-  "Privacy Policy",
-  "Cookies",
-  "Services",
-  "Contact Us",
-  "About Us",
+const linkData: { name: string; path: string }[] = [
+  { path: '/termsAndConditions', name: 'Terms & conditions' },
+  { path: '/', name: 'Cookies' },
+  { path: '/', name: 'Services' },
+  { path: '/contactUs', name: 'Contact Us' },
+  { path: '/aboutUs', name: 'About Us' },
 ];
 
 function Footer() {
@@ -18,14 +19,11 @@ function Footer() {
         <div className="flex ms:flex-col justify-between mb-20 md:mb-0 w-full md:min-w-max m-auto">
           <div className="max-w-full md:max-w-[300px] lg:max-w-[360px] mr-4 sm:mr-10 md:mr-[15px] lg:mr-[40px] xl:mr-[86px]">
             <ul>
-              <p className="font-bold text-2xl mb-10 ms:text-center">
-                OFFSHORING
-              </p>
+              <p className="font-bold text-2xl mb-10 ms:text-center">OFFSHORING</p>
               <p className="text-sm leading-8 ms:text-center">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet,
-                fugiat in! Nesciunt totam soluta quas id, delectus blanditiis
-                est, consectetur, exercitationem consequuntur doloribus corporis
-                laborum nostrum nam facilis numquam amet.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet, fugiat in! Nesciunt
+                totam soluta quas id, delectus blanditiis est, consectetur, exercitationem
+                consequuntur doloribus corporis laborum nostrum nam facilis numquam amet.
               </p>
             </ul>
           </div>
@@ -37,15 +35,17 @@ function Footer() {
               Quick links
             </h4>
             <ul className="ms:grid ms:grid-cols-3 justify-items-center">
-              {linkData.map((item, i) => {
+              {linkData.map(({ path, name }, i) => {
                 return (
                   <li
-                    key={item}
+                    key={name}
                     className={`text-white text-sm font-semibold hover:text-gray-300 cursor-pointer ${
-                      linkData.length === i + 1 ? "" : "mb-2"
+                      linkData.length === i + 1 ? '' : 'mb-2'
                     }`}
                   >
-                    {item}
+                    <Link href={path}>
+                      <a>{name}</a>
+                    </Link>
                   </li>
                 );
               })}
@@ -55,17 +55,15 @@ function Footer() {
 
         <div className="max-w-full md:max-w-[400px] lg:max-w-[446px] w-full">
           <div className="flex w-full justify-between items-start">
-            <p className="font-semibold text-base uppercase leading-7 mb-10">
-              LEAVE US A MESSAGE
-            </p>
-            <div className="flex items-center">
+            <p className="font-semibold text-base uppercase leading-7 mb-10">LEAVE US A MESSAGE</p>
+            <div className="flex items-center hover:text-gray-300 text-white">
               <span className=" mr-3 lg:mr-8 cursor-pointer">
                 <Google />
               </span>
-              <span className=" mr-3 lg:mr-8 cursor-pointer">
+              <span className=" mr-3 lg:mr-8 cursor-pointer hover:text-gray-300 text-white">
                 <Facebook />
               </span>
-              <span className="cursor-pointer">
+              <span className="cursor-pointer hover:text-gray-300 text-white">
                 <Apple />
               </span>
             </div>

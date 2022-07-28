@@ -8,8 +8,10 @@ import {
   candidateSkillInfo,
   contactUsInfo,
   enquiryFormInfo,
+  forgotPasswordInfo,
   languageAndRatingInfo,
   propertyFormInfo,
+  resetPasswordInfo,
   signInInfo,
   skillFormInfo,
   termsAndConditionInfo,
@@ -40,6 +42,12 @@ const useAuthState = () => {
   const [languageAndRatingForm, setLanguageAndRatingForm] = useState({
     ...languageAndRatingInfo,
   });
+  const [forgotPasswordForm, setForgotPasswordForm] = useState({
+    ...forgotPasswordInfo,
+  });
+  const [resetPasswordForm, setResetPasswordForm] = useState({
+    ...resetPasswordInfo,
+  });
 
   //// validation function
   const handleInputValidation = (
@@ -52,14 +60,18 @@ const useAuthState = () => {
     if (
       name !== "email" &&
       name !== "skillName" &&
-      name !== "cv" &&
+      name !== "CV" &&
       name !== "language" &&
       name !== "password" &&
+      name !== "confirmPassword" &&
       name !== "message" &&
       name !== "experience" &&
       name !== "overallExperience" &&
       name !== "aboutInfo" &&
       name !== "additionalInfo" &&
+      name !== "terms" &&
+      name !== "text" &&
+      name !== "value" &&
       /[^a-zA-Z0-9 ]/.test(value)
     ) {
       error = "Entered value must not be a special character!";
@@ -68,18 +80,19 @@ const useAuthState = () => {
       if (value.trim().length === 0) {
         error = "this field must not be empty!";
       }
-    } else if (name === "password") {
+    } else if (name === "password" || name === "confirmPassword") {
       if (value.trim().length === 0) {
         error = "Password must not be empty!";
       } else if (value.trim().length < 8) {
         error = "Minimum character limit is 8";
-      } else if (
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/.test(
-          value
-        )
-      ) {
-        error =
-          "Password must include one small, one capital and one special character!";
+      } else if (!/^(?=.*[a-z])/.test(value)) {
+        error = "Password must contain at-least one lowercase character (abc)";
+      } else if (!/^(?=.*[A-Z])/.test(value)) {
+        error = "Password must contain at-least one uppercase character (ABC)";
+      } else if (!/^(?=.*[0-9])/.test(value)) {
+        error = "Password must contain at-least one number (123)";
+      } else if (!/^(?=.*[!@#\$%\^&\*])/.test(value)) {
+        error = "Password must contain at-least one special character (@#$)";
       } else if (value.trim().length > 20) {
         error = "Maximum character limit is 20";
       }
@@ -132,7 +145,7 @@ const useAuthState = () => {
     } else if (name === "value") {
       if (value.trim().length === 0) {
         error = "This field must not be empty!";
-      } else if (/[^a-zA-Z0-9 ]/.test(value)) {
+      } else if (/[^a-zA-Z0-9. ]/.test(value)) {
         error = "value cannot be a special character!";
       }
     } else if (name === "heading") {
@@ -147,7 +160,7 @@ const useAuthState = () => {
       if (value.trim().length === 0) {
         error = "This Field must not be empty!";
       } else if (value.trim().length < 15) {
-        error = "Minimum character limit is 5";
+        error = "Minimum character limit is 15";
       }
     } else if (name === "skillName") {
       if (value.trim().length === 0) {
@@ -203,7 +216,7 @@ const useAuthState = () => {
       } else if (isNaN(+value)) {
         error = "This field must be a number!";
       }
-    } else if (name === "cv") {
+    } else if (name === "CV") {
       if (value.trim().length === 0) {
         error = "Please select your CV";
       }
@@ -218,7 +231,7 @@ const useAuthState = () => {
       error =
         key === "skillName"
           ? "Select a Skill!"
-          : key === "cv"
+          : key === "CV"
           ? "Please select your CV"
           : `${key} must not be empty`;
     } else if (form.value.length === 0 && form.error.length !== 0) {
@@ -249,9 +262,7 @@ const useAuthState = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     let x = { ...skillForm };
-    const name = e.target.name;
-
-    if (name !== "name" && name !== "iconUrl" && name !== "type") return;
+    const name = e.target.name as keyof typeof skillForm;
 
     x[name]["value"] = e.target.value;
     x[name]["error"] = handleInputValidation(e);
@@ -403,6 +414,42 @@ const useAuthState = () => {
     x[name].error = handleInputValidation(e);
     setLanguageAndRatingForm(x);
   };
+  const handleForgotPasswordForm = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let x = { ...forgotPasswordForm };
+    const name = e.target.name as keyof typeof forgotPasswordForm;
+
+    x[name].value = e.target.value;
+    x[name].error = handleInputValidation(e);
+    setForgotPasswordForm(x);
+  };
+  const handleResetPasswordForm = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let x = { ...resetPasswordForm };
+    const name = e.target.name as keyof typeof resetPasswordForm;
+    console.log(name);
+
+    x[name]["value"] = e.target.value;
+    x[name]["error"] = handleInputValidation(e);
+
+    if (
+      name === "confirmPassword" &&
+      e.target.value !== resetPasswordForm.password.value
+    ) {
+      x.confirmPassword.error = "Password dis not match!";
+    } else if (
+      name === "password" &&
+      e.target.value !== resetPasswordForm.confirmPassword.value
+    ) {
+      x.confirmPassword.error = "Password dis not match!";
+    } else {
+      x.confirmPassword.error = "";
+    }
+
+    setResetPasswordForm(x);
+  };
 
   //// extract data functions
   const extractSignInFormData = () => {
@@ -419,14 +466,8 @@ const useAuthState = () => {
 
     for (const [mainKey, mainValue] of Object.entries(skillForm)) {
       let mainVal = mainValue;
-      if (
-        mainKey !== "name" &&
-        mainKey !== "iconUrl" &&
-        mainKey !== "type" &&
-        mainKey !== "candidatesHired"
-      )
-        return;
-      data[mainKey] = mainVal.value;
+      const key = mainKey as keyof typeof skillForm;
+      data[key] = mainVal.value;
     }
     return data;
   };
@@ -637,6 +678,24 @@ const useAuthState = () => {
 
     return data;
   };
+  const extractForgotPasswordFormData = () => {
+    let data: any = {};
+    for (const [mainKey, mainValue] of Object.entries(forgotPasswordForm)) {
+      const key = mainKey as keyof typeof forgotPasswordForm;
+      data[key] = mainValue.value;
+    }
+
+    return data;
+  };
+  const extractResetPasswordFormData = () => {
+    let data: { [key: string]: string } = {};
+    for (const [mainKey, mainValue] of Object.entries(resetPasswordForm)) {
+      const key = mainKey as keyof typeof resetPasswordForm;
+      data[key] = mainValue.value;
+    }
+
+    return data;
+  };
 
   //// post functions
   const postSignInForm = async () => {
@@ -683,32 +742,35 @@ const useAuthState = () => {
 
       for (const [mainKey, mainValue] of Object.entries(x)) {
         let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+        const key = mainKey as keyof typeof skillForm;
 
-        if (
-          mainKey !== "name" &&
-          mainKey !== "type" &&
-          mainKey !== "iconUrl" &&
-          mainKey !== "candidatesHired"
-        ) {
-          console.log(mainKey, " is missing in if() condition");
-          return;
-        }
-        x[mainKey]["error"] = err;
+        x[key]["error"] = err;
 
         if (err.length !== 0) {
           error = true;
         }
       }
+
       console.log("error", error);
       if (error) {
         setSkillForm(x);
         console.log("error-false", error);
         throw Error("Invalid or Incomplete Form Fields...");
       }
+
       //extractData
-      const data: SkillFormType = extractSkillFormData();
+      const extractedData: SkillFormType = extractSkillFormData();
+      console.log("extractedData skill", extractedData);
+
+      const data = {
+        name: extractedData.skillName,
+        type: extractedData.type,
+        iconUrl: extractedData.iconUrl,
+        candidatesHired: extractedData.candidatesHired,
+      };
       console.log("post skill form data", data);
       console.log("skillId from authState", skillId);
+
       let resp: any;
       if (skillId) {
         resp = await User.updateSkill(data, skillId);
@@ -971,8 +1033,7 @@ const useAuthState = () => {
         if (
           key !== "skills" &&
           key !== "languages" &&
-          key !== "additionalInfo" &&
-          key !== "cv"
+          key !== "additionalInfo"
         ) {
           err = formEmptyAndErrorValidation(
             mainValue,
@@ -1019,6 +1080,78 @@ const useAuthState = () => {
       throw new Error(err);
     }
   };
+  const postForgotPasswordForm = async () => {
+    try {
+      let x = { ...forgotPasswordForm };
+      let error = false;
+
+      //end validation
+      for (const [mainKey, mainValue] of Object.entries(x)) {
+        let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+        const key = mainKey as keyof typeof forgotPasswordForm;
+        // if (mainKey !== "email" && mainKey !== "password") return;
+        x[key]["error"] = err;
+
+        if (err.length !== 0) {
+          error = true;
+        }
+      }
+
+      if (error) {
+        setForgotPasswordForm(x);
+        console.log("error-false", error);
+        throw Error("Invalid or Incomplete Form Fields...");
+      }
+      //extractData
+      const data: { email: string } = extractForgotPasswordFormData();
+      const res = await User.forgotPassword(data);
+
+      if (res.status !== 200 && res.status !== 201) {
+        throw new Error(res);
+      }
+      return res;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
+  const postResetPasswordForm = async () => {
+    try {
+      let x = { ...resetPasswordForm };
+      let error = false;
+
+      //end validation
+      for (const [mainKey, mainValue] of Object.entries(x)) {
+        let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+        const key = mainKey as keyof typeof resetPasswordForm;
+        // if (mainKey !== "email" && mainKey !== "password") return;
+        x[key]["error"] = err;
+
+        if (err.length !== 0) {
+          error = true;
+        }
+      }
+
+      if (error) {
+        setResetPasswordForm(x);
+        console.log("error-false", error);
+        throw Error("Invalid or Incomplete Form Fields...");
+      }
+      //extractData
+      const data = extractResetPasswordFormData();
+      const password = {
+        password: data.password === data.confirmPassword && data.password,
+      };
+      console.log("password", password);
+      // const res = await User.forgotPassword(data);
+
+      // if (res.status !== 200 && res.status !== 201) {
+      //   throw new Error(res);
+      // }
+      // return res;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 
   //// get req functions
   const getSkill = async (id: string) => {
@@ -1029,7 +1162,7 @@ const useAuthState = () => {
       }
       let x = { ...skillForm };
       x.iconUrl.value = resp.data.iconUrl;
-      x.name.value = resp.data.name;
+      x.skillName.value = resp.data.name;
       x.type.value = resp.data.type;
       setSkillForm(x);
       return resp;
@@ -1167,7 +1300,7 @@ const useAuthState = () => {
   };
   const clearSkillForm = () => {
     let x = { ...skillForm };
-    x.name.value = "";
+    x.skillName.value = "";
     x.type.value = "OTHER";
     x.iconUrl.value = noImgFoundBase64;
     /// later we will clear image data too
@@ -1250,7 +1383,7 @@ const useAuthState = () => {
           key === "aboutInfo" ||
           key === "additionalInfo" ||
           key === "overallExperience" ||
-          key === "cv" ||
+          key === "CV" ||
           key === "noticePeriod"
         ) {
           x[key].value = "";
@@ -1297,6 +1430,8 @@ const useAuthState = () => {
     applyForm,
     setApplyForm,
     languageAndRatingForm,
+    forgotPasswordForm,
+    resetPasswordForm,
 
     handleSignInForm,
     handleSkillForm,
@@ -1309,6 +1444,8 @@ const useAuthState = () => {
     handleEnquiryForm,
     handleApplyForm,
     handlelanguageAndRatingForm,
+    handleForgotPasswordForm,
+    handleResetPasswordForm,
 
     extractCandidateSkillForm,
     extractCandidatePropertyForm,
@@ -1323,6 +1460,8 @@ const useAuthState = () => {
     postContactUsForm,
     postEnquiryForm,
     postApplyAsDeveloperForm,
+    postForgotPasswordForm,
+    postResetPasswordForm,
 
     getSkill,
     getCandidate,
