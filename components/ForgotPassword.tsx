@@ -16,6 +16,9 @@ const ForgotPassword = () => {
     handleForgotPasswordForm,
   } = useAuthState();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
 
   const formSubmitHandler = async (e: React.FormEvent) => {
@@ -23,20 +26,19 @@ const ForgotPassword = () => {
 
     try {
       setIsLoading(true);
-      const resp = await postForgotPasswordForm();
-
-      //   setCookies("token", "");
-      //   setCookies("token", resp.data.token);
-
-      console.log("resp signIn", resp.data);
-      //   router.push("/admin/dashboard");
+      const res = await postForgotPasswordForm();
+      console.log("response", res);
       setIsLoading(false);
+      notifySuccess("Please check your email");
+      setIsDisabled(true);
     } catch (err: any) {
       console.log(err);
       setIsLoading(false);
       notifyError(err.message);
     }
   };
+
+  const condition = isLoading || isDisabled;
 
   return (
     <div className="bg-screen p-15 flex items-center justify-between w-full rounded-2xl">
@@ -59,18 +61,18 @@ const ForgotPassword = () => {
           containerClassName={`${
             forgotPasswordForm.email.error.length === 0 ? "mb-5" : "mb-10"
           } bg-white`}
-          disabled={isLoading}
+          disabled={condition}
         />
         <button
           className={`uppercase text-white rounded px-2.5 h-10 drop-shadow-md hover:shadow-md disabled:drop-shadow-none ${
-            isLoading ? "pointer-events-none" : ""
+            condition ? "pointer-events-none" : ""
           }`}
           style={{
-            backgroundImage: !isLoading
+            backgroundImage: !condition
               ? "linear-gradient(to bottom, #70d3f1 0%,#60c8e7 5%, #119fca 88%, #119fca 98%)"
               : "linear-gradient(rgb(242 242 242) 0%, rgb(171 171 171) 5%, rgb(140 141 141) 88%, rgb(121 122 122) 98%)",
           }}
-          disabled={isLoading}
+          disabled={condition}
         >
           {isLoading ? (
             <LoadingSpinner spinnerClassName="w-6 h-6 m-auto" />
@@ -78,8 +80,14 @@ const ForgotPassword = () => {
             "RESET"
           )}
         </button>
-        <p className="text-xs text-gray3 mt-6 text-center">
-          We will email you a link to reset your password
+        <p
+          className={`text-xs mt-6 text-center ${
+            isDisabled ? "text-darkSkyBlue" : "text-gray3"
+          }`}
+        >
+          {isDisabled
+            ? "Please check your email"
+            : "We will email you a link to reset your password"}
         </p>
         <Toaster position="top-right" reverseOrder={false} />
       </form>

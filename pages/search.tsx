@@ -10,8 +10,11 @@ import ArrowNext from "../components/icons/ArrowNext";
 import { getCookie, setCookies } from "cookies-next";
 import { useAppContext } from "../store/context/AppContext";
 import { BASE_URL } from "../api/config";
+import toast, { Toaster } from "react-hot-toast";
 
 const Search = () => {
+  const notifySuccess = (message: string) => toast.success(message);
+  const notifyError = (err: string) => toast.error(err);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const url = `${BASE_URL}/client/get/candidate/?limit=${limit}&page=${page}`;
@@ -35,6 +38,7 @@ const Search = () => {
       setCandidateHiringlist(updatedData);
       setHiringListCount(updatedData.length);
       setCookies("hiringList", updatedData);
+      notifySuccess("candidate remove from hiring list!");
     } else {
       // add
       const updatedData =
@@ -42,6 +46,7 @@ const Search = () => {
       setCandidateHiringlist(updatedData);
       setHiringListCount(updatedData.length);
       setCookies("hiringList", updatedData);
+      notifySuccess("candidate added in hiring list!");
     }
   };
 
@@ -127,6 +132,7 @@ const Search = () => {
           />
         )}
       </section>
+      <Toaster position="top-right" reverseOrder={false} />
     </>
   );
 };

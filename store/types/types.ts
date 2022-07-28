@@ -76,4 +76,5 @@ export type ApplyAsDeveloperFormType = {
   havePc: string;
   okWithWorking8To1: string;
   id?: string;
+  CV: string;
 };

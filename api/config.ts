@@ -1,5 +1,5 @@
-// export const BASE_URL = "http://localhost:3000/api";
-export const BASE_URL = "https://offshoreserver.herokuapp.com/api";
+export const BASE_URL = "http://localhost:3000/api";
+// export const BASE_URL = "https://offshoreserver.herokuapp.com/api";
 
 export const URLS = {
   SIGN_IN: BASE_URL + "/user/login",
@@ -51,6 +51,8 @@ export const URLS = {
   GET_TERMS: BASE_URL + "/user/get/terms",
   UPDATE_TERMS: BASE_URL + "/user/update/terms",
   DELETE_TERM: BASE_URL + "/user/terms",
+
+  GET_CLIENT_TERMS: BASE_URL + "/client/get/terms",
 
   //// other
   CONTACT_US: BASE_URL + "/client/contact",

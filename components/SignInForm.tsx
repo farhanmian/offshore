@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import useAuthState from "../hooks/useAuthState";
 import Input from "./partials/Input";
 import img from "../assets/img/sign-in-img.png";
+import LoadingSpinner from "./partials/Loading/LoadingSpinner";
 
 const SignInForm = () => {
   const router = useRouter();
@@ -90,12 +91,17 @@ const SignInForm = () => {
             isLoading ? "pointer-events-none" : ""
           }`}
           style={{
-            backgroundImage:
-              "linear-gradient(to bottom, #70d3f1 0%,#60c8e7 5%, #119fca 88%, #119fca 98%)",
+            backgroundImage: !isLoading
+              ? "linear-gradient(to bottom, #70d3f1 0%,#60c8e7 5%, #119fca 88%, #119fca 98%)"
+              : "linear-gradient(rgb(242 242 242) 0%, rgb(171 171 171) 5%, rgb(140 141 141) 88%, rgb(121 122 122) 98%)",
           }}
           disabled={isLoading}
         >
-          log in
+          {isLoading ? (
+            <LoadingSpinner spinnerClassName="w-6 h-6 m-auto" />
+          ) : (
+            "log in"
+          )}
         </button>
         <Toaster position="top-right" reverseOrder={false} />
       </form>

@@ -16,6 +16,7 @@ import TextArea from "../../components/partials/TextArea";
 import useAuthState from "../../hooks/useAuthState";
 import { useAppContext } from "../../store/context/AppContext";
 import { ApplyAsDeveloperFormType } from "../../store/types/types";
+import NextLink from "next/link";
 
 const LanguageItemContainer: React.FC<{
   language: string;
@@ -550,8 +551,16 @@ const CandidateInfo: React.FC<{
           }}
         />
 
-        <div className="flex gap-5 justify-end">
-          <ButtonSecondary className="px-7 h-10">
+        <div className="flex gap-5 justify-between items-end">
+          <a
+            href={candidateDataInfo.CV}
+            download={candidateDataInfo.CV}
+            className="text-base font-bold text-secondary-main hover:text-secondary-dark transition100"
+          >
+            Download CV
+          </a>
+
+          <ButtonSecondary className="px-7 h-10 ml-auto">
             Delete Request
           </ButtonSecondary>
           <ButtonPrimary

@@ -19,7 +19,7 @@ const TermsContainer: React.FC<{
 const TermsAndConditions: React.FC<{
   terms: { data: []; status: string | number };
 }> = ({ terms }) => {
-  console.log(terms);
+  console.log("termsss", terms);
 
   return (
     <section className="h-full px-3 py-7.5 sm:p-7.5 m-auto">
@@ -35,20 +35,6 @@ const TermsAndConditions: React.FC<{
             <h6 className="text-white text-sm md:text-base uppercase font-semibold lg:font-bold ml-0 sm:ml-9">
               Terms and conditions
             </h6>
-            <select
-              id="hiringProcess"
-              name="hiringProcess"
-              className="w-[180px] sm:w-[250px] lg:w-[300px] h-10 rounded focus:outline-none px-2 sm:px-4 font-bold text-sm lg:text-base"
-            >
-              <option>Hiring Process</option>
-              <option>Hiring In Process</option>
-              <option>Hiring Completed</option>
-              <option>Hiring Ongoing</option>
-              <option>Hiring canceled</option>
-              <option>13</option>
-              <option>14</option>
-              <option>15</option>
-            </select>
           </div>
           <div className="px-3 sm:px-7.5">
             {terms.data.length > 0 ? (
@@ -91,7 +77,7 @@ export const getServerSideProps = async (context: any) => {
     };
   }
 
-  const res = await fetch(URLS.GET_TERMS, {
+  const res = await fetch(URLS.GET_CLIENT_TERMS, {
     method: "GET",
     headers: header,
   });
@@ -105,10 +91,11 @@ export const getServerSideProps = async (context: any) => {
   }
 
   const data = await res.json();
+  console.log("data", data);
 
   return {
     props: {
-      terms: { data: data.terms, status: res.status },
+      terms: { data: data, status: res.status },
     },
   };
 };

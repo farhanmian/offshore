@@ -422,6 +422,14 @@ const useAuthState = () => {
 
     x[name].value = e.target.value;
     x[name].error = handleInputValidation(e);
+
+    if (
+      name == "email" &&
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value)
+    ) {
+      x.email.error = "Enter a valid email";
+    }
+
     setForgotPasswordForm(x);
   };
   const handleResetPasswordForm = (
@@ -1105,6 +1113,7 @@ const useAuthState = () => {
       //extractData
       const data: { email: string } = extractForgotPasswordFormData();
       const res = await User.forgotPassword(data);
+      console.log("ressssssss", res);
 
       if (res.status !== 200 && res.status !== 201) {
         throw new Error(res);
