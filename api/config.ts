@@ -36,6 +36,8 @@ export const URLS = {
   DELETE_SKILL: BASE_URL + "/user/delete/skill",
   UPDATE_SKILL_STATUS: BASE_URL + "/user/updatestatus/skill",
 
+  GET_CANDIDATE_BY_EMPLOYEE_NUMBER: BASE_URL + "/client",
+
   //// skill client
   GET_ALL_SKILLS_CLIENT: BASE_URL + "/client/get/all/skill",
 

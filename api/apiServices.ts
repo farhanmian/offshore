@@ -157,4 +157,7 @@ export const Client = {
 
   postClientFeedback: (data: { email: string; message: string }) =>
     requests.post(`${URLS.CLIENT_FEEDBACK}`, data),
+
+  getCandidateByEmployeeNumber: (employeeNumber: string) =>
+    requests.get(`${URLS.GET_CANDIDATE_BY_EMPLOYEE_NUMBER}/${employeeNumber}`),
 };

@@ -931,7 +931,7 @@ const useAuthState = () => {
         throw new Error("Please add a Property!");
       }
 
-      console.log("candidate FOrm Data---", data);
+      console.log("extracted candidate FOrm Data---", data);
       let resp: any;
 
       if (candidateId) {

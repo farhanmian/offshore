@@ -9,7 +9,7 @@ import Search from "../../components/icons/Search";
 import Delete from "../../components/icons/Delete";
 import Edit from "../../components/icons/Edit";
 import OnOffBtn from "../../components/partials/OnOffBtn";
-import { User } from "../../api/apiServices";
+import { Client, User } from "../../api/apiServices";
 import { URLS } from "../../api/config";
 import HeadingPrimary from "../../components/partials/HeadingPrimary";
 import { useRouter } from "next/router";
@@ -118,6 +118,7 @@ const Dashboard: React.FC<{
     { name: string; type: string; id: string }[]
   >([]);
   const [searchValue, setSearchValue] = useState("");
+  const [showPagination, setShowPagination] = useState(true);
 
   console.log("totalPages", totalPages);
 
@@ -181,39 +182,39 @@ const Dashboard: React.FC<{
     fetchSkills();
   }, []);
 
-  const searchHandler = (
+  const searchHandler = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const name = e.target.name;
     const value = e.target.value;
     const data = { ...candidatesListData };
+
     if (name === "skill") {
       if (value.trim().length === 0) {
         setCandidatesListData(candidatesList);
+        setShowPagination(true);
         return;
       }
-      const updatedData: CandidateDataType[] = [];
-      candidatesList.candidates.map((item: CandidateDataType) => {
-        let foundData = false;
-        item.skills.map((data: any) => {
-          if (data.name.toLowerCase().includes(value.toLowerCase())) {
-            foundData = true;
-          }
-        });
-        if (foundData) {
-          updatedData.push(item);
-        }
-      });
+      setShowPagination(false);
 
-      data.candidates = updatedData;
+      setIsLoading(true);
+      const resp = await Client.searchCandidateBySkillName(value); /// search endpoint
+      data.candidates = resp.data.candidates;
+      setIsLoading(false);
     } else if (name === "candidateNumber") {
       if (value.trim().length === 0) {
         setCandidatesListData(candidatesList);
+        setShowPagination(true);
         return;
       }
-      data.candidates = candidatesList.candidates.filter((item) =>
-        item.employeeNumber.includes(value)
-      );
+      setShowPagination(false);
+      setIsLoading(true);
+
+      const res = await Client.getCandidateByEmployeeNumber(value);
+      console.log("response", res);
+
+      data.candidates = res.data;
+      setIsLoading(false);
     }
     setCandidatesListData(data);
   };
@@ -383,7 +384,12 @@ const Dashboard: React.FC<{
                   link={"/admin/createProperty"}
                   dataList={skillsData && skillsData}
                   onChange={skillChangeHandler}
-                  handleForm={(e) => setSearchValue(e.target.value)}
+                  handleForm={(e) => {
+                    setSearchValue(e.target.value);
+                    if (e.target.value === "") {
+                      setCandidatesListData(candidatesList);
+                    }
+                  }}
                   value={searchValue}
                 />
               </div>
@@ -465,15 +471,18 @@ const Dashboard: React.FC<{
                 ) : (
                   <LoadingSpinner spinnerClassName="h-12 w-12 m-auto mt-20" />
                 )}
-                {!isLoading && totalPages > 1 && (
-                  <Pagination
-                    onClickNext={goNextPageHandler}
-                    onClickPrev={goPrevPageHandler}
-                    currentPage={page}
-                    totalPages={totalPages}
-                    className="mt-10 ml-auto w-64 justify-between"
-                  />
-                )}
+                {!isLoading &&
+                  showPagination &&
+                  !searchValue &&
+                  totalPages > 1 && (
+                    <Pagination
+                      onClickNext={goNextPageHandler}
+                      onClickPrev={goPrevPageHandler}
+                      currentPage={page}
+                      totalPages={totalPages}
+                      className="mt-10 ml-auto w-64 justify-between"
+                    />
+                  )}
               </div>
             </div>
           </div>
