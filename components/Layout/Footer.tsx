@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import useAuthState from "../../hooks/useAuthState";
 import Apple from "../icons/Apple";
@@ -21,15 +21,21 @@ const Footer = () => {
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const formSubmitHandler = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
     try {
       const res = await postFooterMessageForm();
       console.log("response", res);
       console.log("form submit handler");
       notifySuccess("Thank you for your feedback!");
+      setIsLoading(false);
     } catch (err: any) {
       console.log("err", err);
       notifyError(err.message);
+      setIsLoading(false);
     }
   };
 

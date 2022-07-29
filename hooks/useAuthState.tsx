@@ -75,6 +75,7 @@ const useAuthState = () => {
       name !== "additionalInfo" &&
       name !== "terms" &&
       name !== "text" &&
+      name !== "heading" &&
       name !== "value" &&
       /[^a-zA-Z0-9 ]/.test(value)
     ) {
@@ -1229,6 +1230,8 @@ const useAuthState = () => {
       if (resp.status !== 200) {
         throw new Error(resp);
       }
+
+      clearFooterMessageForm();
       return resp;
     } catch (err: any) {
       throw new Error(err);
@@ -1496,6 +1499,15 @@ const useAuthState = () => {
     x.rating.value = "";
 
     setLanguageAndRatingForm(x);
+  };
+
+  const clearFooterMessageForm = () => {
+    let x = { ...footerMessageForm };
+
+    x.email.value = "";
+    x.message.value = "";
+
+    setFooterMessageForm(x);
   };
 
   return {
