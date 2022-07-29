@@ -1,5 +1,5 @@
-// export const BASE_URL = "http://localhost:3000/api";
-export const BASE_URL = "https://offshoreserver.herokuapp.com/api";
+export const BASE_URL = "http://localhost:3000/api";
+// export const BASE_URL = "https://offshoreserver.herokuapp.com/api";
 
 export const URLS = {
   SIGN_IN: BASE_URL + "/user/login",
@@ -59,5 +59,5 @@ export const URLS = {
   //// other
   CONTACT_US: BASE_URL + "/client/contact",
   ENQUIRY_FORM: BASE_URL + "/client/enquiry",
-  CLIENT_FEEDBACK: BASE_URL + "/user/feedback",
+  CLIENT_FEEDBACK: BASE_URL + "/client/feedback",
 };

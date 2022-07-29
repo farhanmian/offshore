@@ -7,6 +7,7 @@ import Facebook from "../icons/Facebook";
 import Google from "../icons/Google";
 import SendIcon from "../icons/SendIcon";
 import Input from "../partials/Input";
+import LoadingSpinner from "../partials/Loading/LoadingSpinner";
 import TextArea from "../partials/TextArea";
 
 const linkData: { name: string; path: string }[] = [
@@ -114,19 +115,29 @@ const Footer = () => {
               error={footerMessageForm.email.error}
               handleForm={handleFooterMessageForm}
               errorStyle="text-white"
+              disabled={isLoading}
             />
 
             <TextArea
               row={4}
               placeholder="Your message"
               name="message"
-              className="w-full px-4 py-2.5 rounded text-dark resize-none"
+              className="w-full px-4 py-2.5 rounded text-dark resize-none disabled:bg-white"
               value={footerMessageForm.message.value}
               error={footerMessageForm.message.error}
               handleForm={handleFooterMessageForm}
               errorStyle="text-white"
-              icon={<SendIcon />}
+              icon={
+                <>
+                  {isLoading ? (
+                    <LoadingSpinner spinnerClassName="h-4 w-4" />
+                  ) : (
+                    <SendIcon />
+                  )}
+                </>
+              }
               iconStyles="bottom-3 right-2.5 cursor-pointer icon"
+              disabled={isLoading}
               onIconClick={formSubmitHandler}
             />
           </form>
