@@ -44,8 +44,6 @@ const Enquiry = () => {
   const [dataFetchingLoading, setDataFetchingLoading] = useState(false);
   const [hiringList, setHiringList] = useState<string[]>([]);
 
-  console.log("candidateListData", candidatesListData);
-
   useEffect(() => {
     setDataFetchingLoading(true);
     const fetchHiringCandidatesList = async () => {

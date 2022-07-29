@@ -115,7 +115,11 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
                       : data.skill.name}
                   </span>
                   <span className="ml-0.5">
-                    ({data.experience.years === 0 ? 'all' : data.experience.years})
+                    (
+                    {data.experience.years === 0
+                      ? "all"
+                      : data.experience.years}
+                    )
                   </span>
                 </p>
                 <button

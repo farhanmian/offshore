@@ -122,3 +122,8 @@ export const resetPasswordInfo = {
   password: { ...basicInputTemplate },
   confirmPassword: { ...basicInputTemplate },
 };
+
+export const footerMessageFormInfo = {
+  email: { ...basicInputTemplate },
+  message: { ...basicInputTemplate },
+};

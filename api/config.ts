@@ -57,4 +57,5 @@ export const URLS = {
   //// other
   CONTACT_US: BASE_URL + "/client/contact",
   ENQUIRY_FORM: BASE_URL + "/client/enquiry",
+  CLIENT_FEEDBACK: BASE_URL + "/user/feedback",
 };

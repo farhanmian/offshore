@@ -23,6 +23,7 @@ const Search = () => {
 
   const [candidateHiringList, setCandidateHiringlist] = useState<string[]>([]);
   const { setHiringListCount } = useAppContext();
+  const { landingPageSearchFormValue } = useAppContext();
 
   useEffect(() => {
     const hiringList: any = getCookie("hiringList");
@@ -74,6 +75,15 @@ const Search = () => {
       return result;
     }
   }, [stateData, url]);
+
+  useEffect(() => {
+    if (!landingPageSearchFormValue.name) return;
+    const newFilter: any = {
+      skill: landingPageSearchFormValue,
+      experience: { years: 0 },
+    };
+    state.insertAt(0, newFilter);
+  }, [landingPageSearchFormValue]);
 
   console.log("fetchedCandidates", fetchCandidates);
 

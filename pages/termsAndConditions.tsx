@@ -10,7 +10,9 @@ const TermsContainer: React.FC<{
     <div className={`${className}`}>
       <p className="text-sm font-bold mb-3">{heading}</p>
       <div className="p-4 sm:p-7.5 font-normal text-dark bg-white rounded-lg border border-gray3 ">
-        <p className="mb-3">{text}</p>
+        <p style={{ lineBreak: "anywhere" }} className="mb-3">
+          {text}
+        </p>
       </div>
     </div>
   );

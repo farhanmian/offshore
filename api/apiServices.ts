@@ -154,4 +154,7 @@ export const Client = {
   /// apply as developer
   applyAsDeveloper: (data: ApplyAsDeveloperFormType) =>
     requests.post(`${URLS.APPLY_AS_DEVELOPER}`, data),
+
+  postClientFeedback: (data: { email: string; message: string }) =>
+    requests.post(`${URLS.CLIENT_FEEDBACK}`, data),
 };

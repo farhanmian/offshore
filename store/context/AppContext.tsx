@@ -19,8 +19,10 @@ interface AppContextInterface {
   setAppliedCandidateCount: React.Dispatch<React.SetStateAction<number>>;
   hiringListCount: number;
   setHiringListCount: React.Dispatch<React.SetStateAction<number>>;
-  landingPageSearchFormValue: string;
-  setLandingPageSearchFormValue: React.Dispatch<React.SetStateAction<string>>;
+  landingPageSearchFormValue: { name: string };
+  setLandingPageSearchFormValue: React.Dispatch<
+    React.SetStateAction<{ name: string }>
+  >;
 }
 
 const defaultAppliedCandidatesState = {
@@ -61,7 +63,7 @@ const MainContext = createContext<AppContextInterface>({
   setAppliedCandidateCount: () => {},
   hiringListCount: 0,
   setHiringListCount: () => {},
-  landingPageSearchFormValue: "",
+  landingPageSearchFormValue: { name: "" },
   setLandingPageSearchFormValue: () => {},
 });
 
@@ -71,14 +73,18 @@ const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     useState<CandidateDataType>(defaultAppliedCandidatesState);
   const [appliedCandidateCount, setAppliedCandidateCount] = useState(0);
   const [hiringListCount, setHiringListCount] = useState(0);
-  const [landingPageSearchFormValue, setLandingPageSearchFormValue] =
-    useState("");
+  const [landingPageSearchFormValue, setLandingPageSearchFormValue] = useState({
+    name: "",
+  });
 
   const { clearCreateCandidateForm } = useAuthState();
 
   useEffect(() => {
-    if (router.pathname !== "search" || landingPageSearchFormValue !== "") {
-      setLandingPageSearchFormValue("");
+    if (
+      router.pathname !== "search" ||
+      landingPageSearchFormValue.name !== ""
+    ) {
+      setLandingPageSearchFormValue({ name: "" });
     }
 
     if (

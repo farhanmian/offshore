@@ -17,6 +17,9 @@ const TextArea: React.FC<{
   containerClassName?: string;
   border?: string;
   errorStyle?: string;
+  icon?: React.ReactElement;
+  iconStyles?: string;
+  onIconClick?: () => void;
 }> = ({
   className,
   name,
@@ -32,6 +35,9 @@ const TextArea: React.FC<{
   containerClassName,
   border,
   errorStyle,
+  icon,
+  iconStyles,
+  onIconClick,
 }) => {
   return (
     <div
@@ -59,6 +65,13 @@ const TextArea: React.FC<{
         onChange={handleForm}
         disabled={disabled}
       />
+
+      {icon && (
+        <span className={`absolute ${iconStyles}`} onClick={onIconClick}>
+          {icon}
+        </span>
+      )}
+
       {error && error.length > 0 && (
         <p
           className={`${

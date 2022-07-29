@@ -131,7 +131,10 @@ const TermsContainer: React.FC<{
 
       <div className="relative">
         {!edit && (
-          <div className="bg-white p-7.5 rounded-lg border border-gray3 leading-7">
+          <div
+            style={{ lineBreak: "anywhere" }}
+            className="bg-white p-7.5 rounded-lg border border-gray3 leading-7"
+          >
             {form.text}
           </div>
         )}

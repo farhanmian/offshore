@@ -8,6 +8,7 @@ import {
   candidateSkillInfo,
   contactUsInfo,
   enquiryFormInfo,
+  footerMessageFormInfo,
   forgotPasswordInfo,
   languageAndRatingInfo,
   propertyFormInfo,
@@ -48,6 +49,9 @@ const useAuthState = () => {
   const [resetPasswordForm, setResetPasswordForm] = useState({
     ...resetPasswordInfo,
   });
+  const [footerMessageForm, setFooterMessageForm] = useState({
+    ...footerMessageFormInfo,
+  });
 
   //// validation function
   const handleInputValidation = (
@@ -78,7 +82,7 @@ const useAuthState = () => {
     }
     if (name === "email") {
       if (value.trim().length === 0) {
-        error = "this field must not be empty!";
+        error = "This field must not be empty!";
       }
     } else if (name === "password" || name === "confirmPassword") {
       if (value.trim().length === 0) {
@@ -139,8 +143,6 @@ const useAuthState = () => {
         } must not be empty!`;
       } else if (value.trim().length < 10) {
         error = "Minimum character limit is 10";
-      } else if (value.trim().length > 300) {
-        error = "Maximum character limit is 300";
       }
     } else if (name === "value") {
       if (value.trim().length === 0) {
@@ -388,6 +390,14 @@ const useAuthState = () => {
       const data: any = e.target.value;
       x.candidateDetails = data;
     }
+
+    if (
+      name == "email" &&
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value)
+    ) {
+      x.email.error = "Enter a valid email";
+    }
+
     setEnquiryForm(x);
   };
   const handleApplyForm = (
@@ -457,6 +467,24 @@ const useAuthState = () => {
     }
 
     setResetPasswordForm(x);
+  };
+  const handleFooterMessageForm = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    let x = { ...footerMessageForm };
+    const name = e.target.name as keyof typeof footerMessageForm;
+
+    x[name]["value"] = e.target.value;
+    x[name]["error"] = handleInputValidation(e);
+
+    if (
+      name == "email" &&
+      !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value)
+    ) {
+      x.email.error = "Enter a valid email";
+    }
+
+    setFooterMessageForm(x);
   };
 
   //// extract data functions
@@ -702,6 +730,15 @@ const useAuthState = () => {
       data[key] = mainValue.value;
     }
 
+    return data;
+  };
+  const extractFooterMessageFormData = () => {
+    let data: any = { email: "", password: "" };
+    for (const [mainKey, mainValue] of Object.entries(footerMessageForm)) {
+      let mainVal = mainValue;
+      const key = mainKey as keyof typeof footerMessageForm;
+      data[key] = mainVal.value;
+    }
     return data;
   };
 
@@ -1161,6 +1198,42 @@ const useAuthState = () => {
       throw new Error(err);
     }
   };
+  const postFooterMessageForm = async () => {
+    try {
+      let x = { ...footerMessageForm };
+      let error = false;
+
+      //end validation
+      for (const [mainKey, mainValue] of Object.entries(x)) {
+        let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+        const key = mainKey as keyof typeof footerMessageForm;
+        x[key]["error"] = err;
+
+        if (err.length !== 0) {
+          error = true;
+        }
+      }
+
+      if (error) {
+        setFooterMessageForm(x);
+        console.log("error-false", error);
+        throw Error("Invalid or Incomplete Form Fields...");
+      }
+      //extractData
+      const data: { email: string; message: string } =
+        extractFooterMessageFormData();
+      console.log("extract footerMessageData", data);
+
+      const resp: any = await Client.postClientFeedback(data);
+
+      if (resp.status !== 200) {
+        throw new Error(resp);
+      }
+      return resp;
+    } catch (err: any) {
+      throw new Error(err);
+    }
+  };
 
   //// get req functions
   const getSkill = async (id: string) => {
@@ -1441,6 +1514,7 @@ const useAuthState = () => {
     languageAndRatingForm,
     forgotPasswordForm,
     resetPasswordForm,
+    footerMessageForm,
 
     handleSignInForm,
     handleSkillForm,
@@ -1455,6 +1529,7 @@ const useAuthState = () => {
     handlelanguageAndRatingForm,
     handleForgotPasswordForm,
     handleResetPasswordForm,
+    handleFooterMessageForm,
 
     extractCandidateSkillForm,
     extractCandidatePropertyForm,
@@ -1471,6 +1546,7 @@ const useAuthState = () => {
     postApplyAsDeveloperForm,
     postForgotPasswordForm,
     postResetPasswordForm,
+    postFooterMessageForm,
 
     getSkill,
     getCandidate,

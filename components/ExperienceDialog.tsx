@@ -1,7 +1,7 @@
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
-import ExperienceList from './ExperienceList';
-import SettingsIcon from './icons/SettingsIcon';
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import ExperienceList from "./ExperienceList";
+import SettingsIcon from "./icons/SettingsIcon";
 
 export default function ExperienceDialog({
   selectedExperience,
@@ -19,7 +19,9 @@ export default function ExperienceDialog({
       experience: selectedExperience,
     };
 
-    const isExist: any = stateData.findIndex((data: any) => data.skill.id === newFilter.skill.id);
+    const isExist: any = stateData.findIndex(
+      (data: any) => data.skill.id === newFilter.skill.id
+    );
 
     if (isExist >= 0) {
       state.updateAt(isExist, newFilter);
@@ -66,7 +68,10 @@ export default function ExperienceDialog({
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title as="h3" className="text-lg font-bold leading-6 text-gray-900">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-lg font-bold leading-6 text-gray-900"
+                  >
                     Skill Name
                   </Dialog.Title>
                   <span className="block w-full h-[1px] bg-black my-2"></span>
