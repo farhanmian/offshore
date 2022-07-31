@@ -69,7 +69,7 @@ export default function Header() {
 
   return (
     <Fragment>
-      <header className="flex justify-between fixed top-0 left-0 right-0 z-50 items-center px-4 shadow-bottom py-4 bg-white">
+      <header className="flex justify-between fixed top-0 left-0 right-0 z-20 items-center px-4 shadow-bottom py-4 bg-white">
         <button onClick={() => setOpen(true)} className="hidden mbTab:block">
           <MenuIcon className="w-8 h-auto" />
         </button>

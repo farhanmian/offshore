@@ -119,11 +119,14 @@ const Dashboard: React.FC<{
   >([]);
   const [searchValue, setSearchValue] = useState("");
   const [showPagination, setShowPagination] = useState(true);
-
-  console.log("totalPages", totalPages);
+  const [prevCandidateData, setPreviousCandidateData] = useState<{
+    candidates: [];
+    count: 0;
+  }>({ candidates: [], count: 0 });
 
   //// fetching candidates list whenever limit changes
   useEffect(() => {
+    console.log("limit", limit);
     const fetchCandidates = async () => {
       setIsLoading(true);
       try {
@@ -145,6 +148,7 @@ const Dashboard: React.FC<{
         setTotalPages(pageCount);
 
         setCandidatesListData(resp.data);
+        setPreviousCandidateData(resp.data);
         setIsLoading(false);
 
         if (resp.data.candidates.length === 0 && resp.data.count > 0) {
@@ -182,6 +186,12 @@ const Dashboard: React.FC<{
     fetchSkills();
   }, []);
 
+  useEffect(() => {
+    if (searchValue !== "") return;
+    setShowPagination(true);
+    setCandidatesListData(prevCandidateData);
+  }, [searchValue]);
+
   const searchHandler = async (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -191,10 +201,10 @@ const Dashboard: React.FC<{
 
     if (name === "skill") {
       if (value.trim().length === 0) {
-        setCandidatesListData(candidatesList);
-        setShowPagination(true);
+        setCandidatesListData(prevCandidateData);
         return;
       }
+
       setShowPagination(false);
 
       setIsLoading(true);
@@ -203,7 +213,7 @@ const Dashboard: React.FC<{
       setIsLoading(false);
     } else if (name === "candidateNumber") {
       if (value.trim().length === 0) {
-        setCandidatesListData(candidatesList);
+        setCandidatesListData(prevCandidateData);
         setShowPagination(true);
         return;
       }
@@ -471,18 +481,15 @@ const Dashboard: React.FC<{
                 ) : (
                   <LoadingSpinner spinnerClassName="h-12 w-12 m-auto mt-20" />
                 )}
-                {!isLoading &&
-                  showPagination &&
-                  !searchValue &&
-                  totalPages > 1 && (
-                    <Pagination
-                      onClickNext={goNextPageHandler}
-                      onClickPrev={goPrevPageHandler}
-                      currentPage={page}
-                      totalPages={totalPages}
-                      className="mt-10 ml-auto w-64 justify-between"
-                    />
-                  )}
+                {!isLoading && showPagination && totalPages > 1 && (
+                  <Pagination
+                    onClickNext={goNextPageHandler}
+                    onClickPrev={goPrevPageHandler}
+                    currentPage={page}
+                    totalPages={totalPages}
+                    className="mt-10 ml-auto w-64 justify-between"
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ const NoOfCandidateShown: React.FC<{
   limit: number;
   onChange: (e: number) => void;
 }> = ({ limit, onChange }) => {
+  console.log("limit from noOfCandidate", limit);
   return (
     <div className="bg-primaryBlue pl-4 h-10 pr-1.5 flex items-center justify-between ml-auto rounded">
       <p className="text-white text-xs font-medium mr-5">
