@@ -100,7 +100,16 @@ const AllSkills = () => {
   const router = useRouter();
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
-  const [skillDataList, setSkillDataList] = useState([]);
+  const [skillDataList, setSkillDataList] = useState<
+    {
+      name: string;
+      candidatesHired: number;
+      iconUrl: string;
+      id: string;
+      status: string;
+      type: string;
+    }[]
+  >([]);
   const [showActiveSkills, setShowActiveSkills] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteSkillLoading, setDeleteSkillLoading] = useState("");
@@ -117,7 +126,12 @@ const AllSkills = () => {
           throw Error(resp);
         }
         console.log("sillData", resp);
-        setSkillDataList(resp.data);
+
+        const alphabetically = [...resp.data].sort((a: any, b: any) =>
+          a.name > b.name ? 1 : -1
+        );
+
+        setSkillDataList(alphabetically);
         setIsLoading(false);
       } catch (err) {
         console.log(err);
@@ -233,43 +247,31 @@ const AllSkills = () => {
           <div className="font-medium text-sm text-black">
             {!isLoading ? (
               skillDataList.length > 0 ? (
-                skillDataList.map(
-                  (
-                    item: {
-                      name: string;
-                      candidatesHired: number;
-                      iconUrl: string;
-                      id: string;
-                      status: string;
-                      type: string;
-                    },
-                    i
-                  ) => {
-                    return (
-                      item.status.includes(
-                        `${showActiveSkills ? "ENABLED" : "DISABLED"}`
-                      ) && (
-                        <SkillCard
-                          loading={deleteSkillLoading === item.id}
-                          onChangeActiveStatus={() =>
-                            changeActiveStatusHandler(item.id)
-                          }
-                          activeStatus={item.status}
-                          onDelete={() => {
-                            deleteSkillHandler(item.id);
-                          }}
-                          key={i}
-                          id={item.id}
-                          skillName={item.name}
-                          candidatesHired={item.candidatesHired}
-                          icon={item.iconUrl ? item.iconUrl : noImgFound}
-                          type={item.type}
-                          statusLoading={activeStatusLoading}
-                        />
-                      )
-                    );
-                  }
-                )
+                skillDataList.map((item, i) => {
+                  return (
+                    item.status.includes(
+                      `${showActiveSkills ? "ENABLED" : "DISABLED"}`
+                    ) && (
+                      <SkillCard
+                        loading={deleteSkillLoading === item.id}
+                        onChangeActiveStatus={() =>
+                          changeActiveStatusHandler(item.id)
+                        }
+                        activeStatus={item.status}
+                        onDelete={() => {
+                          deleteSkillHandler(item.id);
+                        }}
+                        key={i}
+                        id={item.id}
+                        skillName={item.name}
+                        candidatesHired={item.candidatesHired}
+                        icon={item.iconUrl ? item.iconUrl : noImgFound}
+                        type={item.type}
+                        statusLoading={activeStatusLoading}
+                      />
+                    )
+                  );
+                })
               ) : (
                 <div className="flex mt-8 justify-center text-sm">
                   <p className="font-medium">No Skills Found,</p>{" "}

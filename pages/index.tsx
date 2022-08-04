@@ -63,9 +63,9 @@ const dummyData = [
   },
 ];
 
-const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
-  skills,
-}) => {
+const Home: React.FC<{
+  skills: { name: string; iconUrl: string; type: string }[];
+}> = ({ skills }) => {
   const router = useRouter();
   const [selectedSkill, setSelectedSkill] = useState<{ name: string }>();
   const { setLandingPageSearchFormValue } = useAppContext();
@@ -87,6 +87,8 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
     setLandingPageSearchFormValue(e);
     router.push("/search");
   };
+
+  const mainSkills = skills.filter((item) => item.type === "MAIN");
 
   return (
     <section className="min-h-full">
@@ -141,16 +143,18 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
             <div className="font-semibold text-neptuneBlue">
               Most Popular skills
             </div>
-            <a
-              className="text-sm font-bold text-secondary-main"
-              onClick={() => setSeeMore(!seeMore)}
-            >
-              {seeMore ? "See Less" : "See All"}
-            </a>
+            {mainSkills.length > 10 && (
+              <a
+                className="text-sm font-bold text-secondary-main"
+                onClick={() => setSeeMore(!seeMore)}
+              >
+                {seeMore ? "See Less" : "See All"}
+              </a>
+            )}
           </div>
           <div className={`${styles.popularSkillsBgImg} mt-4 rounded`}>
             <div className="grid grid-cols-3 md:grid-cols-5 max-w-6xl m-auto items-center justify-center gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10 py-10 px-4 sm:px-[15px] md:px-[30px] lg:px-[60px] capitalize">
-              {skills
+              {mainSkills
                 .slice(0, seeMore ? skills.length : 10)
                 .map((item: { name: string; iconUrl: string }, i) => {
                   return (
@@ -159,7 +163,11 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
                       className="bg-white flex flex-col w-full h-full rounded p-3 md:px-5 cursor-pointer"
                       onClick={(e) => selectSkillHandler(item)}
                     >
-                      <div className="pl-2">{item.name}</div>
+                      <div className="pl-2">
+                        {item.name.length > 13
+                          ? `${item.name.slice(0, 12)}..`
+                          : item.name}
+                      </div>
                       <div className="w-9 h-10 sm:w-11 sm:h-12 ml-auto mt-9">
                         {/* {item.icon} */}
                         <Image

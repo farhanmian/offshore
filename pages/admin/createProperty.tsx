@@ -81,7 +81,7 @@ const CreateProperty = () => {
   const [statusLoading, setStatusLoading] = useState("");
 
   const [propertyList, setPropertyList] = useState<{
-    properties: [];
+    properties: { name: string; status: string; id: string }[];
     count: number;
   }>({ properties: [], count: 0 });
 
@@ -94,7 +94,12 @@ const CreateProperty = () => {
         if (resp.status !== 200) {
           throw new Error(resp);
         }
-        setPropertyList(resp.data);
+
+        const alphabetically: { name: string; status: string; id: string }[] = [
+          ...resp.data.properties,
+        ].sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+
+        setPropertyList({ properties: alphabetically, count: resp.data.count });
         setIsLoading(false);
       } catch (err: any) {
         console.log(err);

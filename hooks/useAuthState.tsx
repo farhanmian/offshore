@@ -168,7 +168,7 @@ const useAuthState = () => {
     } else if (name === "skillName") {
       if (value.trim().length === 0) {
         error = "Skill name must not be empty!";
-      } else if (/[^a-zA-Z0-9.+ ]/.test(value)) {
+      } else if (/[^a-zA-Z0-9.+# ]/.test(value)) {
         error = "Skill name must not contain special characters!";
       } else if (value.trim().length > 30) {
         error = "Maximum character limit is 30";
@@ -505,6 +505,9 @@ const useAuthState = () => {
       let mainVal = mainValue;
       const key = mainKey as keyof typeof skillForm;
       data[key] = mainVal.value;
+      if (mainKey === "iconUrl" && !mainVal.value) {
+        data.iconUrl = noImgFoundBase64;
+      }
     }
     return data;
   };
@@ -783,15 +786,17 @@ const useAuthState = () => {
     try {
       let x = { ...skillForm };
       let error = false;
-      console.log("skillform", x);
+      console.log("skillform -x", x);
       //end validation
 
       for (const [mainKey, mainValue] of Object.entries(x)) {
-        let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+        let err = "";
+        if (mainKey !== "iconUrl") {
+          err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+        }
+
         const key = mainKey as keyof typeof skillForm;
-
         x[key]["error"] = err;
-
         if (err.length !== 0) {
           error = true;
         }
