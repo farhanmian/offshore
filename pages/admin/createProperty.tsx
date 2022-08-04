@@ -97,7 +97,9 @@ const CreateProperty = () => {
 
         const alphabetically: { name: string; status: string; id: string }[] = [
           ...resp.data.properties,
-        ].sort((a: any, b: any) => (a.name > b.name ? 1 : -1));
+        ].sort((a: any, b: any) =>
+          a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+        );
 
         setPropertyList({ properties: alphabetically, count: resp.data.count });
         setIsLoading(false);

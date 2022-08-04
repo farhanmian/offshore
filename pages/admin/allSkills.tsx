@@ -125,10 +125,10 @@ const AllSkills = () => {
         if (resp.status !== 200) {
           throw Error(resp);
         }
-        console.log("sillData", resp);
 
-        const alphabetically = [...resp.data].sort((a: any, b: any) =>
-          a.name > b.name ? 1 : -1
+        const alphabetically = [...resp.data].sort(
+          (a: { name: string }, b: { name: string }) =>
+            a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
         );
 
         setSkillDataList(alphabetically);

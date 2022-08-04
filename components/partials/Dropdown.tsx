@@ -72,7 +72,7 @@ const Dropdown: React.FC<{
   }, [showModal]);
 
   const alphabetically = [...dataList].sort((a: any, b: any) =>
-    a.name > b.name ? 1 : -1
+    a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
   );
 
   return (

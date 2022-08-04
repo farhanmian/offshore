@@ -150,7 +150,8 @@ const Dashboard: React.FC<{
         setTotalPages(pageCount);
 
         const alphabetically = [...resp.data.candidates].sort(
-          (a: any, b: any) => (a.title > b.title ? 1 : -1)
+          (a: any, b: any) =>
+            a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
         );
         const transformedData: {
           candidates: CandidateDataType[];
@@ -556,7 +557,7 @@ export const getServerSideProps = async (context: any) => {
   const data = await res.json();
 
   const alphabetically = [...data.candidates].sort((a: any, b: any) =>
-    a.title > b.title ? 1 : -1
+    a.title.toLowerCase() > b.title.toLowerCase() ? 1 : -1
   );
 
   return {

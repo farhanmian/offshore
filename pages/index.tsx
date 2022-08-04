@@ -232,7 +232,7 @@ const AllSkills: React.FC<{
   const [activeSkillBtn, setActiveSkillBtn] = useState("top");
   const [allSkillsData, setAllSkillsData] = useState(data);
   const alphabetically = [...data].sort((a: any, b: any) =>
-    a.name > b.name ? 1 : -1
+    a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
   );
 
   return (
@@ -266,8 +266,6 @@ const AllSkills: React.FC<{
       </div>
       <div className="mb-10 grid ms:grid-cols-1 grid-cols-2 sm:grid-cols-3 ms:max-w-[80%] max-w-[98%] md:max-w-[90%] xl:max-w-6xl m-auto gap-x-[30px]">
         {allSkillsData.map((item, i) => {
-          console.log("ITEM", item);
-
           return (
             <div
               key={i}
