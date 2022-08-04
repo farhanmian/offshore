@@ -98,7 +98,10 @@ export const User = {
   createSkill: (data: CreateSkillType) =>
     requests.post(`${URLS.CREATE_SKILL}`, data),
 
-  getAllSkills: () => requests.get(`${URLS.GET_ALL_SKILLS}`),
+  getAllSkills: (status?: string) =>
+    requests.get(
+      `${URLS.GET_ALL_SKILLS}?status=${status ? status : "enabled"}`
+    ),
   getSkill: (skillId: string) => requests.get(`${URLS.GET_SKILL}/${skillId}`),
   updateSkill: (data: CreateSkillType, id: string) =>
     requests.put(`${URLS.UPDATE_SKILL}/${id}`, data),

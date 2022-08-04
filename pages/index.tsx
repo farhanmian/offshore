@@ -8,12 +8,16 @@ import FrontendIcon from "../components/icons/FrontendIcon";
 import JavaIcon from "../components/icons/JavaIcon";
 import EndToEndIcon from "../components/icons/EndToEndIcon";
 import RoundedButton from "../components/partials/RoundedButton";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useAppContext } from "../store/context/AppContext";
 import NextLink from "next/link";
 import styles from "../styles/Images.module.css";
 import SearchInput from "../components/SearchInput";
+import { Client } from "../api/apiServices";
+import toast, { Toaster } from "react-hot-toast";
+import { noImgFoundBase64 } from "../assets/img/no-img-found-base64";
+import { URLS } from "../api/config";
 
 const dummyData = [
   {
@@ -59,10 +63,16 @@ const dummyData = [
   },
 ];
 
-const Home: NextPage = () => {
+const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
+  skills,
+}) => {
   const router = useRouter();
   const [selectedSkill, setSelectedSkill] = useState<{ name: string }>();
   const { setLandingPageSearchFormValue } = useAppContext();
+  const [seeMore, setSeeMore] = useState(false);
+
+  const notifySuccess = (message: string) => toast.success(message);
+  const notifyError = (err: string) => toast.error(err);
 
   const searchFormSubmitHandler = (e: React.FormEvent) => {
     e.preventDefault();
@@ -122,29 +132,49 @@ const Home: NextPage = () => {
 
         {/* most popular skills */}
         <div className="pt-10">
-          <div className="font-semibold text-neptuneBlue p-2 lg:pl-20 md:pl-10 sm:pl-5 pl-5">
-            Most Popular skills
+          <div className="flex justify-between items-center p-2 lg:px-20 md:px-10 sm:px-5 px-5">
+            <div className="font-semibold text-neptuneBlue">
+              Most Popular skills
+            </div>
+            <a
+              className="text-sm font-bold text-secondary-main"
+              onClick={() => setSeeMore(!seeMore)}
+            >
+              {seeMore ? "See Less" : "See All"}
+            </a>
           </div>
           <div className={`${styles.popularSkillsBgImg} mt-4 rounded`}>
-            <div className="grid grid-cols-3 sm:grid-cols-5 max-w-6xl m-auto items-center justify-center gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10 py-10 px-4 sm:px-[15px] md:px-[30px] lg:px-[60px] capitalize">
-              {dummyData.map((item, i) => {
-                return (
-                  <div
-                    key={i}
-                    className="bg-white flex flex-col w-full h-full rounded p-3 md:p-5"
-                  >
-                    <div className="pl-2">{item.name}</div>
-                    <span className="w-9 h-10 sm:w-11 sm:h-12 ml-auto mt-6">
-                      {item.icon}
-                    </span>
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-3 md:grid-cols-5 max-w-6xl m-auto items-center justify-center gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10 py-10 px-4 sm:px-[15px] md:px-[30px] lg:px-[60px] capitalize">
+              {skills
+                .slice(0, seeMore ? skills.length : 10)
+                .map((item: { name: string; iconUrl: string }, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="bg-white flex flex-col w-full h-full rounded p-3 md:px-5"
+                    >
+                      <div className="pl-2">{item.name}</div>
+                      <div className="w-9 h-10 sm:w-11 sm:h-12 ml-auto mt-9">
+                        {/* {item.icon} */}
+                        <Image
+                          src={item.iconUrl ? item.iconUrl : noImgFoundBase64}
+                          alt="img"
+                          loader={() =>
+                            `${item.iconUrl ? item.iconUrl : noImgFoundBase64}`
+                          }
+                          width={"100%"}
+                          height={"100%"}
+                          className="overflow-hidden rounded-full object-cover"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
           </div>
 
           {/* all skills list */}
-          <AllSkills />
+          <AllSkills data={skills} />
 
           <div className="flex items-center justify-between rounded-lg max-w-6xl m-auto mt-[70px] px-3 mb-10 md:px-7 xl:px-0">
             <div className="text-[15px] w-11/12 sm:w-1/2">
@@ -181,10 +211,12 @@ const Home: NextPage = () => {
   );
 };
 
-function AllSkills() {
+const AllSkills: React.FC<{ data: { name: string; iconUrl: string }[] }> = ({
+  data,
+}) => {
   const [activeSkillBtn, setActiveSkillBtn] = useState("top");
-  const [allSkillsData, setAllSkillsData] = useState(dummyData);
-  const alphabetically = [...dummyData].sort((a: any, b: any) =>
+  const [allSkillsData, setAllSkillsData] = useState(data);
+  const alphabetically = [...data].sort((a: any, b: any) =>
     a.name > b.name ? 1 : -1
   );
 
@@ -199,7 +231,7 @@ function AllSkills() {
               active={activeSkillBtn === "top"}
               onClick={() => {
                 setActiveSkillBtn("top");
-                setAllSkillsData(dummyData);
+                setAllSkillsData(data);
               }}
             >
               top
@@ -227,13 +259,57 @@ function AllSkills() {
               className="flex items-center justify-between w-full mt-5 bg-screen rounded max-h-12 min-h-[45px] px-2 h-10 capitalize"
             >
               <p className="text-sm font-semibold text-black">{item.name}</p>
-              <span className="w-6 h-6">{item.icon}</span>
+              <span className="w-6 h-6">
+                <Image
+                  src={item.iconUrl ? item.iconUrl : noImgFoundBase64}
+                  alt="img"
+                  loader={() =>
+                    `${item.iconUrl ? item.iconUrl : noImgFoundBase64}`
+                  }
+                  width={"100%"}
+                  height={"100%"}
+                  className="overflow-hidden rounded-full object-cover"
+                />
+              </span>
             </div>
           );
         })}
       </div>
+      <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
-}
+};
 
 export default Home;
+
+export const getServerSideProps = async () => {
+  const res = await fetch(URLS.GET_ALL_SKILLS_CLIENT, {
+    method: "GET",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+
+  if (res.status !== 200) {
+    return {
+      props: {
+        skills: [],
+      },
+    };
+  }
+
+  const data = await res.json();
+
+  const updatedData =
+    data &&
+    data.candidates &&
+    data.candidates.filter(
+      (item: { status: string }) => item.status === "ENABLED"
+    );
+
+  return {
+    props: {
+      skills: data,
+    },
+  };
+};

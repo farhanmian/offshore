@@ -71,6 +71,10 @@ const Dropdown: React.FC<{
     });
   }, [showModal]);
 
+  const alphabetically = [...dataList].sort((a: any, b: any) =>
+    a.name > b.name ? 1 : -1
+  );
+
   return (
     <div id="dropdown" className="relative w-full mr-5">
       <Input
@@ -105,8 +109,8 @@ const Dropdown: React.FC<{
           id="dropdown"
           className="absolute w-full min-h-[80px] max-h-56 overflow-auto border border-t-0 border-gray-300 bg-white shadow-md rounded-b-md p-3 z-30"
         >
-          {dataList && dataList.length > 0 ? (
-            dataList.map(
+          {alphabetically && alphabetically.length > 0 ? (
+            alphabetically.map(
               (item: { name: string; id: string; type: string }, i) => {
                 return (
                   item.name
@@ -116,7 +120,7 @@ const Dropdown: React.FC<{
                       id="dropdown"
                       key={item.id}
                       className={`${
-                        dataList.length === i + 1 ? "" : "mb-2"
+                        alphabetically.length === i + 1 ? "" : "mb-2"
                       } cursor-pointer hover:bg-gray-200 px-1 rounded py-1`}
                       onClick={() => {
                         selectOptionHandler(

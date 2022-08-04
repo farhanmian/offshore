@@ -110,7 +110,9 @@ const AllSkills = () => {
     const fetchSkillData = async () => {
       try {
         setIsLoading(true);
-        const resp: any = await User.getAllSkills();
+        const resp: any = await User.getAllSkills(
+          !showActiveSkills ? "disabled" : ""
+        );
         if (resp.status !== 200) {
           throw Error(resp);
         }
@@ -123,7 +125,7 @@ const AllSkills = () => {
       }
     };
     fetchSkillData();
-  }, []);
+  }, [showActiveSkills]);
 
   const deleteSkillHandler = async (id: string) => {
     console.log(id);

@@ -108,6 +108,7 @@ const CreateCandidate = () => {
       try {
         const resp: any = await User.getAllSkills();
         setSkillListData(resp.data);
+        console.log("skillData", resp);
       } catch (err) {
         console.log(err);
       }

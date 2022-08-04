@@ -96,7 +96,10 @@ const CandidateCard: React.FC<{
 };
 
 const Dashboard: React.FC<{
-  candidatesList: { candidates: CandidateDataType[]; count: number };
+  candidatesList: {
+    candidates: CandidateDataType[];
+    count: number;
+  };
 }> = ({ candidatesList }) => {
   const router = useRouter();
   const curPage = router.query.page;
@@ -120,8 +123,8 @@ const Dashboard: React.FC<{
   const [searchValue, setSearchValue] = useState("");
   const [showPagination, setShowPagination] = useState(true);
   const [prevCandidateData, setPreviousCandidateData] = useState<{
-    candidates: [];
-    count: 0;
+    candidates: CandidateDataType[];
+    count: number;
   }>({ candidates: [], count: 0 });
 
   //// fetching candidates list whenever limit changes
@@ -142,13 +145,25 @@ const Dashboard: React.FC<{
         if (resp.status !== 200) {
           throw new Error(resp);
         }
-        console.log("resp candidate data", resp);
 
         const pageCount = Math.ceil(resp.data.count / limit);
         setTotalPages(pageCount);
 
-        setCandidatesListData(resp.data);
-        setPreviousCandidateData(resp.data);
+        const alphabetically = [...resp.data.candidates].sort(
+          (a: any, b: any) => (a.title > b.title ? 1 : -1)
+        );
+        const transformedData: {
+          candidates: CandidateDataType[];
+          count: number;
+        } = {
+          candidates: alphabetically,
+          count: resp.data.count,
+        };
+
+        console.log("alphabetically", alphabetically);
+
+        setCandidatesListData(transformedData);
+        setPreviousCandidateData(transformedData);
         setIsLoading(false);
 
         if (resp.data.candidates.length === 0 && resp.data.count > 0) {
@@ -540,9 +555,16 @@ export const getServerSideProps = async (context: any) => {
   }
   const data = await res.json();
 
+  const alphabetically = [...data.candidates].sort((a: any, b: any) =>
+    a.title > b.title ? 1 : -1
+  );
+
   return {
     props: {
-      candidatesList: data,
+      candidatesList: {
+        candidates: alphabetically,
+        count: data.count,
+      },
     },
   };
 };
