@@ -83,6 +83,11 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
     router.push("/search");
   };
 
+  const selectSkillHandler = (e: { name: string }) => {
+    setLandingPageSearchFormValue(e);
+    router.push("/search");
+  };
+
   return (
     <section className="min-h-full">
       <div className=" w-full h-full lg:pt-10 md:pt-5 max-w-screen-2xl m-auto">
@@ -151,7 +156,8 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
                   return (
                     <div
                       key={i}
-                      className="bg-white flex flex-col w-full h-full rounded p-3 md:px-5"
+                      className="bg-white flex flex-col w-full h-full rounded p-3 md:px-5 cursor-pointer"
+                      onClick={(e) => selectSkillHandler(item)}
                     >
                       <div className="pl-2">{item.name}</div>
                       <div className="w-9 h-10 sm:w-11 sm:h-12 ml-auto mt-9">
@@ -174,7 +180,7 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
           </div>
 
           {/* all skills list */}
-          <AllSkills data={skills} />
+          <AllSkills data={skills} onClick={(e) => selectSkillHandler(e)} />
 
           <div className="flex items-center justify-between rounded-lg max-w-6xl m-auto mt-[70px] px-3 mb-10 md:px-7 xl:px-0">
             <div className="text-[15px] w-11/12 sm:w-1/2">
@@ -211,9 +217,10 @@ const Home: React.FC<{ skills: { name: string; iconUrl: string }[] }> = ({
   );
 };
 
-const AllSkills: React.FC<{ data: { name: string; iconUrl: string }[] }> = ({
-  data,
-}) => {
+const AllSkills: React.FC<{
+  data: { name: string; iconUrl: string }[];
+  onClick: (e: { name: string; iconUrl: string }) => void;
+}> = ({ data, onClick }) => {
   const [activeSkillBtn, setActiveSkillBtn] = useState("top");
   const [allSkillsData, setAllSkillsData] = useState(data);
   const alphabetically = [...data].sort((a: any, b: any) =>
@@ -256,7 +263,8 @@ const AllSkills: React.FC<{ data: { name: string; iconUrl: string }[] }> = ({
           return (
             <div
               key={i}
-              className="flex items-center justify-between w-full mt-5 bg-screen rounded max-h-12 min-h-[45px] px-2 h-10 capitalize"
+              className="flex items-center justify-between w-full mt-5 bg-screen rounded max-h-12 min-h-[45px] px-2 h-10 capitalize cursor-pointer"
+              onClick={() => onClick(item)}
             >
               <p className="text-sm font-semibold text-black">{item.name}</p>
               <span className="w-6 h-6">

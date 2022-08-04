@@ -96,6 +96,7 @@ const CreateSkill = () => {
       reader.readAsDataURL(file);
       reader.onload = (e: any) => {
         setImgUrl(e.target.result);
+        console.log(e.target.result);
         resolve(reader.result);
       };
       reader.onerror = (error) => reject(error);
