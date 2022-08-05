@@ -214,7 +214,7 @@ const CreateProperty = () => {
           >
             <Input
               autoFocus
-              placeholder="Add a new Skill"
+              placeholder="Add a new Property"
               width="w-full"
               containerClassName="mr-5 px-3 bg-white"
               name="name"

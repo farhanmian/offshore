@@ -88,7 +88,10 @@ const Home: React.FC<{
     router.push("/search");
   };
 
-  const mainSkills = skills.filter((item) => item.type === "MAIN");
+  const mainSkillsData = skills.filter((item) => item.type === "MAIN");
+  const mainSkills = [...mainSkillsData].sort((a: any, b: any) =>
+    a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+  );
 
   return (
     <section className="min-h-full">
