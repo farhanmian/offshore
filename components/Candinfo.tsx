@@ -515,7 +515,13 @@ const Candinfo = () => {
               Upload your CV
             </ButtonSecondary>
             <div className="mt-1 text-xs font-semibold justify-center flex">
-              {fileName && <p className="text-secondary-main">{fileName}</p>}
+              {fileName && (
+                <p className="text-secondary-main">
+                  {fileName.length > 20
+                    ? `${fileName.slice(0, 20)}...`
+                    : fileName}
+                </p>
+              )}
               {applyForm.CV.error.length > 0 && (
                 <p className="text-red-600">{applyForm.CV.error}</p>
               )}

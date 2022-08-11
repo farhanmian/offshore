@@ -18,9 +18,11 @@ export const URLS = {
   GET_APPLIED_CANDIDATE: BASE_URL + "/user/get/applied",
   DELETE_CANDIDATE: BASE_URL + "/user/delete/candidate",
   DELETE_APPLIED_CANDIDATE: BASE_URL + "/user/delete/applied",
-  DELETE_MULTIPLE_APPLIED_CANDIDATES: BASE_URL + "/user/delete/applied",
+  REJECT_MULTIPLE_APPLIED_CANDIDATES: BASE_URL + "/user/reject/applied",
   FORGOT_PASSWORD: BASE_URL + "/user/forgot",
   RESET_PASSWORD: BASE_URL + "/reset",
+
+  APPLIED_CANDIDATE_STATUS: BASE_URL + "/client/status",
 
   //// candidate user
   GET_MULTIPLE_CANDIDATES: BASE_URL + "/client/get/multiple",

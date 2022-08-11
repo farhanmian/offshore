@@ -31,6 +31,7 @@ const useAuthState = () => {
   const [candidateSkillForm, setCandidateSkillForm] = useState({
     ...candidateSkillInfo,
   });
+
   const [candidatePropertyForm, setCandidatePropertyForm] = useState({
     ...candidatePropertyFormInfo,
   });
@@ -77,6 +78,9 @@ const useAuthState = () => {
       name !== "text" &&
       name !== "heading" &&
       name !== "value" &&
+      name !== "skillsId" &&
+      name !== "propertiesId" &&
+      name !== "title" &&
       /[^a-zA-Z0-9 ]/.test(value)
     ) {
       error = "Entered value must not be a special character!";
@@ -132,7 +136,7 @@ const useAuthState = () => {
         error = "Title must not be empty!";
       } else if (/\d/.test(value)) {
         error = "Title must not contain numbers!";
-      } else if (/[^a-zA-Z0-9 ]/.test(value)) {
+      } else if (/[^a-zA-Z0-9- ]/.test(value)) {
         error = "Title must not contain special characters!";
       } else if (value.trim().length < 2) {
         error = "Minimum character limit is 2";
@@ -168,7 +172,7 @@ const useAuthState = () => {
     } else if (name === "skillName") {
       if (value.trim().length === 0) {
         error = "Skill name must not be empty!";
-      } else if (/[^a-zA-Z0-9.+# ]/.test(value)) {
+      } else if (/[^a-zA-Z0-9-.+# ]/.test(value)) {
         error = "Skill name must not contain special characters!";
       } else if (value.trim().length > 30) {
         error = "Maximum character limit is 30";
@@ -252,7 +256,6 @@ const useAuthState = () => {
   ) => {
     let x = { ...signInForm };
     const name = e.target.name;
-    console.log(name);
 
     if (name !== "email" && name !== "password") return;
 
@@ -289,14 +292,7 @@ const useAuthState = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     let x = { ...candidateSkillForm };
-    const name = e.target.name;
-    if (
-      name !== "skillName" &&
-      name !== "experience" &&
-      name !== "type" &&
-      name !== "iconUrl"
-    )
-      return;
+    const name = e.target.name as keyof typeof candidateSkillForm;
 
     x[name].value = e.target.value;
     x[name].error = handleInputValidation(e);
@@ -307,8 +303,8 @@ const useAuthState = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     let x = { ...candidatePropertyForm };
-    const name = e.target.name;
-    if (name !== "name" && name !== "value") return;
+    const name = e.target.name as keyof typeof candidatePropertyForm;
+
     x[name].value = e.target.value;
     x[name].error = handleInputValidation(e);
 
@@ -318,19 +314,9 @@ const useAuthState = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     let x = { ...candidateForm };
-    const name = e.target.name;
+    const name = e.target.name as keyof typeof candidateForm;
 
-    if (
-      name === "title" ||
-      name === "employeeNumber" ||
-      name === "aboutInfo" ||
-      name === "additionalInfo" ||
-      name === "terms" ||
-      name === "fullTimeJob" ||
-      name === "partTimeJob" ||
-      name === "havePc" ||
-      name === "okWithWorking8To1"
-    ) {
+    if (name !== "skills" && name !== "properties") {
       x[name]["value"] = e.target.value;
       x[name]["error"] = handleInputValidation(e);
     }
@@ -530,16 +516,13 @@ const useAuthState = () => {
       x.type.value = "OTHER";
     }
     ///// final validation
-    for (const [mainKey, mainValue] of Object.entries(x)) {
-      let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+    for (const [key, mainValue] of Object.entries(x)) {
+      const mainKey = key as keyof typeof candidateSkillForm;
+      let err = "";
+      if (mainKey !== "skillsId") {
+        err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
+      }
 
-      if (
-        mainKey !== "skillName" &&
-        mainKey !== "experience" &&
-        mainKey !== "type" &&
-        mainKey !== "iconUrl"
-      )
-        return;
       x[mainKey]["error"] = err;
 
       if (err.length !== 0) {
@@ -555,13 +538,7 @@ const useAuthState = () => {
     let data: any = {};
     for (const [mainKey, mainValue] of Object.entries(candidateSkillForm)) {
       let mainVal = mainValue;
-      if (
-        mainKey !== "skillName" &&
-        mainKey !== "experience" &&
-        mainKey !== "type" &&
-        mainKey !== "iconUrl"
-      )
-        return;
+
       data[mainKey] = mainVal.value;
     }
     console.log("extract candidateskillform data---", data);
@@ -572,10 +549,10 @@ const useAuthState = () => {
     let error = false;
 
     ///// final validation
-    for (const [mainKey, mainValue] of Object.entries(x)) {
+    for (const [key, mainValue] of Object.entries(x)) {
+      const mainKey = key as keyof typeof candidatePropertyForm;
       let err = formEmptyAndErrorValidation(mainValue, `${mainKey}`);
 
-      if (mainKey !== "name" && mainKey !== "value") return;
       x[mainKey]["error"] = err;
 
       if (err.length !== 0) {
@@ -590,7 +567,7 @@ const useAuthState = () => {
     let data: any = {};
     for (const [mainKey, mainValue] of Object.entries(candidatePropertyForm)) {
       let mainVal = mainValue;
-      if (mainKey !== "name" && mainKey !== "value") return;
+
       data[mainKey] = mainVal.value;
     }
     return data;
@@ -615,6 +592,7 @@ const useAuthState = () => {
             experience: item.experience,
             type: item.type,
             iconUrl: item.iconUrl ? item.iconUrl : "iconUrl",
+            skillsId: item.skillsId,
           };
           skillData.push(data);
         });
@@ -713,7 +691,8 @@ const useAuthState = () => {
       let mainVal = mainValue;
       if (mainKey !== "language" && mainKey !== "rating") return;
 
-      data[mainKey] = mainVal.value;
+      data[mainKey] =
+        mainVal.value.charAt(0).toUpperCase() + mainVal.value.slice(1);
     }
 
     return data;
@@ -882,23 +861,9 @@ const useAuthState = () => {
       let error = false;
 
       // end validation
-      for (const [mainKey, mainValue] of Object.entries(x)) {
+      for (const [key, mainValue] of Object.entries(x)) {
         let err = "";
-
-        if (
-          mainKey !== "employeeNumber" &&
-          mainKey !== "title" &&
-          mainKey !== "aboutInfo" &&
-          mainKey !== "additionalInfo" &&
-          mainKey !== "terms" &&
-          mainKey !== "skills" &&
-          mainKey !== "properties" &&
-          mainKey !== "fullTimeJob" &&
-          mainKey !== "partTimeJob" &&
-          mainKey !== "havePc" &&
-          mainKey !== "okWithWorking8To1"
-        )
-          return;
+        const mainKey = key as keyof typeof candidateForm;
         if (
           mainKey !== "skills" &&
           mainKey !== "properties" &&
@@ -1351,12 +1316,14 @@ const useAuthState = () => {
             experience: "",
             iconUrl: "",
             type: "",
+            skillsId: "",
           },
         ];
         x.properties = [
           {
             name: "",
             value: "",
+            propertiesId: "",
           },
         ];
       } else {

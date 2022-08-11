@@ -22,6 +22,7 @@ export const propertyFormInfo = {
 export const candidatePropertyFormInfo = {
   name: { ...basicInputTemplate },
   value: { ...basicInputTemplate },
+  propertiesId: { ...basicInputTemplate },
 };
 
 export const candidateSkillInfo = {
@@ -29,11 +30,12 @@ export const candidateSkillInfo = {
   iconUrl: { ...basicInputTemplate, value: noImgFoundBase64 },
   experience: { ...basicInputTemplate },
   type: { ...basicInputTemplate },
+  skillsId: { ...basicInputTemplate },
 };
 
 export const candidateFormInfo = {
-  employeeNumber: { ...basicInputTemplate },
   title: { ...basicInputTemplate },
+  employeeNumber: { ...basicInputTemplate },
   aboutInfo: { ...basicInputTemplate },
   additionalInfo: { ...basicInputTemplate },
   terms: { ...basicInputTemplate },
@@ -43,6 +45,7 @@ export const candidateFormInfo = {
       iconUrl: "",
       experience: "",
       type: "",
+      skillsId: "",
     },
   ],
 
@@ -50,6 +53,7 @@ export const candidateFormInfo = {
     {
       name: "",
       value: "",
+      propertiesId: "",
     },
   ],
 

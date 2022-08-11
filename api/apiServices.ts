@@ -86,13 +86,25 @@ export const User = {
   deleteCandidate: (id: string) =>
     requests.delete(`${URLS.DELETE_CANDIDATE}/${id}`),
 
-  getAppliedCandidates: (limit: number, page: number) =>
-    requests.get(`${URLS.GET_APPLIED_CANDIDATE}?limit=${limit}&page=${page}`),
+  getAppliedCandidates: (
+    limit: number,
+    page: number,
+    status: "draft" | "approved" | "rejected"
+  ) =>
+    requests.get(
+      `${
+        URLS.GET_APPLIED_CANDIDATE
+      }?limit=${limit}&page=${page}&status=${status.toUpperCase()}`
+    ),
 
-  deleteAppliedCandidate: (id: string) =>
-    requests.delete(`${URLS.DELETE_APPLIED_CANDIDATE}/${id}`),
-  deleteMultipleCandidates: (data: { ids: string[] }) =>
-    requests.post(`${URLS.DELETE_MULTIPLE_APPLIED_CANDIDATES}`, data),
+  // deleteAppliedCandidate: (id: string) =>
+  //   requests.delete(`${URLS.DELETE_APPLIED_CANDIDATE}/${id}`),
+  rejectMultipleCandidates: (data: { ids: string[] }) =>
+    requests.post(`${URLS.REJECT_MULTIPLE_APPLIED_CANDIDATES}`, data),
+  changeAppliedCandidateStatus: (
+    status: "APPROVED" | "DRAFT" | "REJECTED",
+    id: string
+  ) => requests.post(`${URLS.APPLIED_CANDIDATE_STATUS}/${status}/${id}`, {}),
 
   //// skill
   createSkill: (data: CreateSkillType) =>

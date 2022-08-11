@@ -37,8 +37,9 @@ export type CandidateDataType = {
     iconUrl: string;
     experience: string;
     type: string;
+    skillsId: string;
   }[];
-  properties: { name: string; value: string }[];
+  properties: { name: string; value: string; propertiesId: string }[];
   fullTimeJob: string;
   partTimeJob: string;
   havePc: string;

@@ -12,6 +12,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Pagination from "../../components/partials/Pagination";
 import LoadingComponent from "../../components/partials/Loading/LoadingComponent";
 import { useAppContext } from "../../store/context/AppContext";
+import RoundedButton from "../../components/partials/RoundedButton";
 
 const ReqContainer: React.FC<{
   candidate: ApplyAsDeveloperFormType;
@@ -49,11 +50,15 @@ const ReqContainer: React.FC<{
           <b>
             Overall Exp - {candidate.overallExperience} years, Notice Period -{" "}
             {candidate.noticePeriod}, Skills :-{" "}
-            {skills.map(
+            {skills.map((item, i) => {
+              const name = item.length > 15 ? `${item.slice(0, 15)}..` : item;
+              return i + 1 === skills.length ? name : `${name}, `;
+            })}
+            {/* {skills.map(
               (item, i) =>
                 item.length > 15 &&
                 `${item.slice(0, 15)}...${skills.length === i + 1 ? "" : ", "}`
-            )}
+            )} */}
           </b>
         </p>
       </NextLink>
@@ -80,38 +85,53 @@ const AppliedCandidates: React.FC<{
   const [candidateDataList, setCandidateDataList] = useState({
     ...candidateDataInfo,
   });
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(15);
   const [page, setPage] = useState(curPage ? +curPage : 1);
   const totalPages = Math.ceil(candidateDataInfo.count / limit);
   const [deleteLoading, setDeleteLoading] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { setAppliedCandidateCount, appliedCandidateCount } = useAppContext();
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"draft" | "approved" | "rejected">(
+    "draft"
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
+
       try {
-        const resp: any = await User.getAppliedCandidates(limit, page);
+        const resp: any = await User.getAppliedCandidates(
+          limit,
+          page,
+          activeTab
+        );
         if (resp.status !== 200) {
           throw new Error(resp);
         }
         console.log("resp", resp);
         setCandidateDataList(resp.data);
         setIsLoading(false);
+
+        if (
+          activeTab === "draft" &&
+          resp.data.appliedCandidates.length !== appliedCandidateCount
+        ) {
+          setAppliedCandidateCount(resp.data.appliedCandidates.length);
+        }
       } catch (err: any) {
         notifyError(err.message);
         setIsLoading(false);
       }
     };
     fetchData();
-  }, [page, limit]);
+  }, [page, limit, activeTab]);
 
   const handleDeleteCandidate = async (id: string) => {
     let x = { ...candidateDataList };
     setDeleteLoading(id);
     try {
-      const resp: any = await User.deleteAppliedCandidate(id);
+      const resp: any = await User.changeAppliedCandidateStatus("REJECTED", id);
       if (resp.status !== 200) {
         throw new Error(resp);
       }
@@ -124,7 +144,7 @@ const AppliedCandidates: React.FC<{
 
       setCandidateDataList(x);
       setDeleteLoading("");
-      notifySuccess("Candidate Successfully deleted");
+      notifySuccess("candidate successfully rejected");
       setAppliedCandidateCount((prev) => prev - 1);
     } catch (err: any) {
       console.log("err", err);
@@ -157,7 +177,7 @@ const AppliedCandidates: React.FC<{
 
   const deleteSelectedCandidatesHandler = async () => {
     try {
-      const resp: any = await User.deleteMultipleCandidates({
+      const resp: any = await User.rejectMultipleCandidates({
         ids: selectedCandidates,
       });
 
@@ -180,12 +200,18 @@ const AppliedCandidates: React.FC<{
       setCandidateDataList(x);
       setSelectedCandidates([]);
 
-      notifySuccess("candidate successfully deleted");
+      notifySuccess("candidate successfully rejected");
     } catch (err: any) {
       console.log("err", err);
       notifyError(err);
     }
   };
+
+  const tabBtns: ["draft", "approved", "rejected"] = [
+    "draft",
+    "approved",
+    "rejected",
+  ];
 
   return (
     <section className="h-full p-7.5">
@@ -197,6 +223,21 @@ const AppliedCandidates: React.FC<{
           {!isLoading ? (
             <>
               <div className="flex items-center justify-between mb-5">
+                <div className="bg-gray5 flex rounded-full items-center">
+                  {tabBtns.map((item, i) => (
+                    <RoundedButton
+                      key={item}
+                      active={item === activeTab}
+                      className="w-37.5"
+                      onClick={() => {
+                        setActiveTab(item);
+                        router.push(`/admin/appliedCandidates?status=${item}`);
+                      }}
+                    >
+                      {item}
+                    </RoundedButton>
+                  ))}
+                </div>
                 <div className="bg-primaryBlue pl-4 h-10 pr-1.5 flex items-center justify-between ml-auto rounded">
                   <p className="text-white text-xs font-medium mr-5">
                     No. of Candidates shown
@@ -287,6 +328,7 @@ export default AppliedCandidates;
 
 export const getServerSideProps = async (context: any) => {
   const { token } = context.req.cookies;
+  const status = context.query.status;
 
   let header;
 
@@ -310,10 +352,15 @@ export const getServerSideProps = async (context: any) => {
     };
   }
 
-  const res = await fetch(`${URLS.GET_ALL_APPLIED_CANDIDATES}?limit=5`, {
-    method: "GET",
-    headers: header,
-  });
+  const res = await fetch(
+    `${URLS.GET_ALL_APPLIED_CANDIDATES}?limit=5&status=${
+      status ? status : "draft"
+    }`,
+    {
+      method: "GET",
+      headers: header,
+    }
+  );
 
   if (res.status !== 200) {
     return {

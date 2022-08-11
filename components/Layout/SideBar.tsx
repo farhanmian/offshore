@@ -62,7 +62,7 @@ const SideBar = () => {
                 Add a Candidate
               </a>
             </NextLink>
-            <NextLink href="/admin/appliedCandidates">
+            <NextLink href="/admin/appliedCandidates?status=draft">
               <a
                 className={
                   pathName === "/admin/appliedCandidates" ? "text-black" : ""

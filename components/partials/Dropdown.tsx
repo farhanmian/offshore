@@ -35,14 +35,18 @@ const Dropdown: React.FC<{
     if (inputName === "skillName" && handleForm) {
       const skill: any = { target: { name: "skillName", value: name } };
       const typeData: any = { target: { name: "type", value: type } };
+      const idData: any = { target: { name: "skillsId", value: id } };
 
       handleForm(skill);
       handleForm(typeData);
+      handleForm(idData);
+
       return;
     } else if (inputName === "name" && handleForm) {
       const data: any = { target: { name: "name", value: name } };
+      const idData: any = { target: { name: "propertiesId", value: id } };
       handleForm(data);
-      return;
+      handleForm(idData);
     }
 
     const data = { name: name, id: id };

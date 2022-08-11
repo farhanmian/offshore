@@ -25,15 +25,27 @@ const CandidateInfoCard: React.FC<{
   type: string;
   onDelete: () => void;
   onChangeSkillType: () => void;
-}> = ({ skillName, experience, onDelete, type, onChangeSkillType }) => {
-  const { candidateForm, handleCandidateForm, setCandidateForm } =
-    useAuthState();
-
+  skillsId: string;
+}> = ({
+  skillName,
+  experience,
+  onDelete,
+  type,
+  onChangeSkillType,
+  skillsId,
+}) => {
   return (
     <div className="grid grid-cols-3 h-20 items-center justify-between">
       <p>{skillName}</p>
+
       <p className="justify-self-center">{experience} Years</p>
       <div className="flex w-full justify-end -ml-3">
+        {!skillsId && (
+          <p className="text-xs mr-auto text-red-500">
+            (Please select the skill from the dropdown)
+          </p>
+        )}
+
         <input
           onChange={onChangeSkillType}
           checked={type === "MAIN" ? true : false}
@@ -51,15 +63,21 @@ const CandidateInfoCard: React.FC<{
 const PropertyCard: React.FC<{
   property: string;
   value: string;
+  propertiesId: string;
   onDelete: () => void;
-}> = ({ property, value, onDelete }) => {
+}> = ({ property, value, onDelete, propertiesId }) => {
   return (
     <div className="grid grid-cols-6 h-20 items-center justify-between text-black font-medium">
       <p className="col-span-3">{property}</p>
       <p className="col-span-1">{value}</p>
 
-      <div className="flex items-center justify-self-end col-end-7">
+      <div className="flex items-center justify-self-end col-span-2 w-full">
         {/* <OnOffBtn className="mr-[18px]" /> */}
+        {!propertiesId && (
+          <p className="text-xs mr-auto text-red-500">
+            (Please select the Property from the dropdown)
+          </p>
+        )}
         <span className="mr-[18px] icon" onClick={onDelete}>
           <Delete />
         </span>
@@ -171,8 +189,33 @@ const CreateCandidate = () => {
         x[key].value = appliedCandidateData[key];
       } else {
         if (appliedCandidateData[key].length === 0) return;
-        x.skills = appliedCandidateData.skills;
-        x.properties = appliedCandidateData.properties;
+        const skillList: {
+          skillName: string;
+          iconUrl: string;
+          experience: string;
+          type: string;
+          skillsId: string;
+        }[] = [];
+        const propertiesList: {
+          name: string;
+          value: string;
+          propertiesId: string;
+        }[] = [];
+        appliedCandidateData.skills.map((item) => {
+          skillList.push({
+            skillName: item.skillName,
+            iconUrl: item.iconUrl,
+            experience: item.experience,
+            type: item.type,
+            skillsId: "",
+          });
+        });
+        appliedCandidateData.properties.map((item) => {
+          propertiesList.push({ ...item, propertiesId: "" });
+        });
+
+        x.skills = skillList;
+        x.properties = propertiesList;
       }
     });
 
@@ -186,6 +229,9 @@ const CreateCandidate = () => {
     const data: any = {
       target: { name: "skillName", value: e.name, id: e.id },
     };
+
+    console.log("skillchange hander-------");
+
     const typeData: any = {
       target: { name: "type", value: type, id: e.id },
     };
@@ -200,6 +246,8 @@ const CreateCandidate = () => {
     handleCandidatePropertyForm(data);
   };
 
+  console.log("candidatePropertyForm", candidatePropertyForm);
+
   const addSkillHandler = (e: React.FormEvent) => {
     console.log("skill handler");
     let x = { ...candidateForm };
@@ -210,8 +258,12 @@ const CreateCandidate = () => {
         experience: string;
         type: string;
         iconUrl: string;
+        id: string;
       } = extractCandidateSkillForm();
       console.log(data);
+
+      console.log("extractedCandidateSkillFOrm", data);
+
       if (x.skills.length === 0 || x.skills[0].skillName.length === 0) {
         x.skills = [data];
       } else {
@@ -323,9 +375,11 @@ const CreateCandidate = () => {
         console.log("resp signIn", resp);
 
         if (appliedCandidateData.id) {
-          const deleteAppliedCandidateResp = await User.deleteAppliedCandidate(
-            appliedCandidateData.id
-          );
+          const deleteAppliedCandidateResp =
+            await User.changeAppliedCandidateStatus(
+              "APPROVED",
+              appliedCandidateData.id
+            );
           setAppliedCandidateCount((prev) => prev - 1);
 
           console.log("deleteAppliedCandidateResp", deleteAppliedCandidateResp);
@@ -353,6 +407,7 @@ const CreateCandidate = () => {
     }
   };
 
+  console.log("candidateFOrm-----", candidateForm);
   const mainSkills = candidateForm.skills.filter(
     (item) => item.type === "MAIN"
   );
@@ -504,6 +559,7 @@ const CreateCandidate = () => {
                           key={i}
                           experience={item.experience}
                           skillName={item.skillName}
+                          skillsId={item.skillsId}
                         />
                       );
                     })
@@ -616,28 +672,21 @@ const CreateCandidate = () => {
               <div className="font-medium text-sm text-black">
                 {candidateForm.properties.length > 0 &&
                 candidateForm.properties[0].name.length ? (
-                  candidateForm.properties.map(
-                    (
-                      item: {
-                        name: string;
-                        value: string;
-                      },
-                      i
-                    ) => {
-                      return (
-                        <PropertyCard
-                          onDelete={() => {
-                            removePropertyHandler(
-                              candidateForm.properties.indexOf(item)
-                            );
-                          }}
-                          key={i}
-                          property={item.name}
-                          value={item.value}
-                        />
-                      );
-                    }
-                  )
+                  candidateForm.properties.map((item, i) => {
+                    return (
+                      <PropertyCard
+                        onDelete={() => {
+                          removePropertyHandler(
+                            candidateForm.properties.indexOf(item)
+                          );
+                        }}
+                        key={i}
+                        property={item.name}
+                        value={item.value}
+                        propertiesId={item.propertiesId}
+                      />
+                    );
+                  })
                 ) : (
                   <p className="text-center mt-5 font-bold">
                     No Property Added!
