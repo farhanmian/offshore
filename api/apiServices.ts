@@ -99,6 +99,13 @@ export const User = {
 
   // deleteAppliedCandidate: (id: string) =>
   //   requests.delete(`${URLS.DELETE_APPLIED_CANDIDATE}/${id}`),
+
+  deleteAppliedCandidate: (id: string) =>
+    requests.delete(`${URLS.DELETE_APPLIED_CANDIDATE}/${id}`),
+
+  deleteMultipleAppliedCandidate: (data: { ids: string[] }) =>
+    requests.post(`${URLS.DELETE_APPLIED_CANDIDATE}`, { data }),
+
   rejectMultipleCandidates: (data: { ids: string[] }) =>
     requests.post(`${URLS.REJECT_MULTIPLE_APPLIED_CANDIDATES}`, data),
   changeAppliedCandidateStatus: (

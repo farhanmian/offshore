@@ -21,6 +21,7 @@ const ReqContainer: React.FC<{
   onCheckedChange: () => void;
   loading: boolean;
   checked: boolean;
+  shouldDelete: boolean;
 }> = ({
   candidate,
   className,
@@ -28,11 +29,14 @@ const ReqContainer: React.FC<{
   loading,
   onCheckedChange,
   checked,
+  shouldDelete,
 }) => {
   const skills: string[] = [];
   candidate.skills.map((item: { skillName: string }) => {
     skills.push(item.skillName);
   });
+
+  console.log("shouldDelete", shouldDelete);
 
   return (
     <div
@@ -62,9 +66,15 @@ const ReqContainer: React.FC<{
           </b>
         </p>
       </NextLink>
-      <span className="cursor-pointer" onClick={onDelete}>
-        {!loading ? <Delete /> : <LoadingSpinner spinnerClassName="h-4 w-4" />}
-      </span>
+      {shouldDelete && (
+        <span className="cursor-pointer" onClick={onDelete}>
+          {!loading ? (
+            <Delete />
+          ) : (
+            <LoadingSpinner spinnerClassName="h-4 w-4" />
+          )}
+        </span>
+      )}
     </div>
   );
 };
@@ -78,6 +88,9 @@ const AppliedCandidates: React.FC<{
   // console.log("candidateDataInfo", candidateDataInfo);
   const router = useRouter();
   const curPage = router.query.page;
+  const queryStatus = router.query.status as "draft" | "approved" | "rejected";
+
+  console.log("queryStatus", queryStatus);
 
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
@@ -93,7 +106,7 @@ const AppliedCandidates: React.FC<{
   const { setAppliedCandidateCount, appliedCandidateCount } = useAppContext();
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"draft" | "approved" | "rejected">(
-    "draft"
+    queryStatus ? queryStatus : "draft"
   );
 
   useEffect(() => {
@@ -128,10 +141,17 @@ const AppliedCandidates: React.FC<{
   }, [page, limit, activeTab]);
 
   const handleDeleteCandidate = async (id: string) => {
+    console.log("activeTab", activeTab);
     let x = { ...candidateDataList };
     setDeleteLoading(id);
     try {
-      const resp: any = await User.changeAppliedCandidateStatus("REJECTED", id);
+      let resp;
+      if (activeTab === "rejected") {
+        console.log("deleting candidate");
+        resp = await User.deleteAppliedCandidate(id);
+      } else {
+        resp = await User.changeAppliedCandidateStatus("REJECTED", id);
+      }
       if (resp.status !== 200) {
         throw new Error(resp);
       }
@@ -144,7 +164,11 @@ const AppliedCandidates: React.FC<{
 
       setCandidateDataList(x);
       setDeleteLoading("");
-      notifySuccess("candidate successfully rejected");
+      notifySuccess(
+        activeTab === "rejected"
+          ? "candidate delete successfully"
+          : "candidate successfully rejected"
+      );
       setAppliedCandidateCount((prev) => prev - 1);
     } catch (err: any) {
       console.log("err", err);
@@ -177,9 +201,16 @@ const AppliedCandidates: React.FC<{
 
   const deleteSelectedCandidatesHandler = async () => {
     try {
-      const resp: any = await User.rejectMultipleCandidates({
-        ids: selectedCandidates,
-      });
+      let resp;
+      if (activeTab === "rejected") {
+        resp = await User.deleteMultipleAppliedCandidate({
+          ids: selectedCandidates,
+        });
+      } else {
+        resp = await User.rejectMultipleCandidates({
+          ids: selectedCandidates,
+        });
+      }
 
       if (resp.status !== 200) {
         throw new Error(resp);
@@ -200,7 +231,11 @@ const AppliedCandidates: React.FC<{
       setCandidateDataList(x);
       setSelectedCandidates([]);
 
-      notifySuccess("candidate successfully rejected");
+      notifySuccess(
+        activeTab === "rejected"
+          ? "candidates deleted successfully"
+          : "candidate successfully rejected"
+      );
     } catch (err: any) {
       console.log("err", err);
       notifyError(err);
@@ -280,6 +315,7 @@ const AppliedCandidates: React.FC<{
                         }
                         key={item.id}
                         candidate={item}
+                        shouldDelete={activeTab === "draft"}
                       />
                     );
                   })
