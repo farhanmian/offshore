@@ -258,7 +258,7 @@ const CreateCandidate = () => {
         experience: string;
         type: string;
         iconUrl: string;
-        id: string;
+        skillsId: string;
       } = extractCandidateSkillForm();
       console.log(data);
 
@@ -306,7 +306,7 @@ const CreateCandidate = () => {
     let x = { ...candidateForm };
     e.preventDefault();
     try {
-      const data: { name: string; value: string } =
+      const data: { name: string; value: string; propertiesId: string } =
         extractCandidatePropertyForm();
       console.log("propertydata", data);
 

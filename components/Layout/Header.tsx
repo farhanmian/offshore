@@ -50,7 +50,7 @@ export default function Header() {
     if (!isInitial) return;
     const fetchAppliedCandidatesCount = async () => {
       try {
-        const res = await User.getAppliedCandidates(8, 1);
+        const res = await User.getAppliedCandidates(8, 1, "draft");
         const appliedCount = res.data.count;
 
         if (res.status !== 200) {

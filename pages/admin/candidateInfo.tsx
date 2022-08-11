@@ -145,9 +145,17 @@ const CandidateInfo: React.FC<{
         x.skills.push(skill);
       }
     } else if (name === "languages") {
-      const languageData: { name: string; value: string }[] = [];
+      const languageData: {
+        name: string;
+        value: string;
+        propertiesId: string;
+      }[] = [];
       applyForm.languages.map((item) => {
-        languageData.push({ name: item.language, value: item.rating });
+        languageData.push({
+          name: item.language,
+          value: item.rating,
+          propertiesId: "",
+        });
       });
 
       if (languageData[0].name.trim().length === 0) {
@@ -169,6 +177,7 @@ const CandidateInfo: React.FC<{
         name:
           name === "overallExperience" ? "Overall Experience" : "Notice Period",
         value: applyForm[name].value,
+        propertiesId: "",
       };
 
       if (data.name.trim().length === 0) return;
