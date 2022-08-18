@@ -78,7 +78,7 @@ const PropertyCard: React.FC<{
             (Please select the Property from the dropdown)
           </p>
         )}
-        <span className="mr-[18px] icon" onClick={onDelete}>
+        <span className="ml-auto mr-[18px] icon" onClick={onDelete}>
           <Delete />
         </span>
       </div>
@@ -165,6 +165,8 @@ const CreateCandidate = () => {
 
   //// updating applied candidate data
   useEffect(() => {
+    if (!appliedCandidateData.id) return;
+    console.log("appliedCanddateData", appliedCandidateData);
     let x = { ...candidateForm };
     Object.keys(appliedCandidateData).map((key) => {
       if (
@@ -245,8 +247,6 @@ const CreateCandidate = () => {
 
     handleCandidatePropertyForm(data);
   };
-
-  console.log("candidatePropertyForm", candidatePropertyForm);
 
   const addSkillHandler = (e: React.FormEvent) => {
     console.log("skill handler");
@@ -371,9 +371,9 @@ const CreateCandidate = () => {
       const resp: any = await postCandidateForm(
         candidateId ? `${candidateId}` : ""
       );
-      if (resp && resp.status === 200) {
-        console.log("resp signIn", resp);
+      console.log("resp createCandidate", resp);
 
+      if (resp && resp.status === 200) {
         if (appliedCandidateData.id) {
           const deleteAppliedCandidateResp =
             await User.changeAppliedCandidateStatus(
@@ -407,7 +407,7 @@ const CreateCandidate = () => {
     }
   };
 
-  console.log("candidateFOrm-----", candidateForm);
+  // console.log("candidateFOrm-----", candidateForm);
   const mainSkills = candidateForm.skills.filter(
     (item) => item.type === "MAIN"
   );
@@ -426,12 +426,6 @@ const CreateCandidate = () => {
         <div className="mb-7.5">
           <div className="flex items-center justify-between mb-5">
             <HeadingPrimary heading="Candidate Information" />
-
-            <NextLink href="/admin/createProperty">
-              <a className="text-secondary-main text-sm font-bold">
-                Go to Properties Page
-              </a>
-            </NextLink>
           </div>
 
           {/* candidate info and form container */}

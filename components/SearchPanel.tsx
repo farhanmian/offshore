@@ -15,14 +15,23 @@ const SearchPanel = ({ fetchCandidates, state, stateData }: any) => {
     { years: 4 },
     { years: 5 },
     { years: 6 },
+    { years: 7 },
+    { years: 8 },
+    { years: 9 },
+    { years: 10 },
+    { years: 11 },
+    { years: 12 },
+    { years: 13 },
+    { years: 14 },
+    { years: 15 },
   ];
   const [selectedSkill, setSelectedSkill] = useState<SkillType | any>(null);
   const [selectedExperience, setSelectedExperience] = useState(experiences[0]);
-
+  console.log("selectedExperience", selectedExperience);
   const handleSubmit = () => {
     const newFilter: any = {
       skill: selectedSkill,
-      experience: selectedExperience,
+      experience: { years: 0 },
     };
 
     const isExist: any = stateData.findIndex(

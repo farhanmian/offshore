@@ -134,8 +134,6 @@ const useAuthState = () => {
     } else if (name === "title") {
       if (value.trim().length === 0) {
         error = "Title must not be empty!";
-      } else if (/\d/.test(value)) {
-        error = "Title must not contain numbers!";
       } else if (/[^a-zA-Z0-9- ]/.test(value)) {
         error = "Title must not contain special characters!";
       } else if (value.trim().length < 2) {
@@ -1247,7 +1245,7 @@ const useAuthState = () => {
               const data = {
                 skillName: item.name,
                 experience: item.experience,
-                id: item.id,
+                skillsId: item.id,
                 type: item.type,
                 iconUrl: item.iconUrl,
               };
@@ -1255,7 +1253,15 @@ const useAuthState = () => {
             });
             x[mainKey] = skillData;
           } else {
-            x[mainKey] = resp.data[mainKey];
+            const propertiesData: any = [];
+            resp.data.properties.map((item: any) => {
+              propertiesData.push({
+                name: item.name,
+                value: item.value,
+                propertiesId: item.id,
+              });
+            });
+            x[mainKey] = propertiesData;
           }
         }
       });

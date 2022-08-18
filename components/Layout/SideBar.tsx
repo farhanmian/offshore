@@ -4,6 +4,12 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { removeCookies } from "cookies-next";
 
+const candidateLinksData = [
+  { text: "Add a Candidate", link: "/admin/createCandidate" },
+  { text: "Applied Candidate", link: "/admin/appliedCandidates?status=draft" },
+  { text: "Dashboard", link: "/admin/dashboard" },
+];
+
 const SideBar = () => {
   const router = useRouter();
   const pathName = router.pathname;
@@ -34,7 +40,9 @@ const SideBar = () => {
         <div className="mb-3 mt-3">
           <div
             className={`flex items-center justify-between w-full cursor-pointer ${
-              pathName === "/admin/createCandidate" ? "text-black" : ""
+              candidateLinksData.find((item) => item.link.includes(pathName))
+                ? "text-black"
+                : ""
             }`}
             onClick={() => {
               setOpenCandidate(!openCandidate);
@@ -50,10 +58,21 @@ const SideBar = () => {
 
           <div
             className={`ml-3 ${
-              openCandidate ? "h-14 mt-3" : "h-0"
+              openCandidate ? "h-20 mt-3" : "h-0"
             } overflow-hidden transition100`}
           >
-            <NextLink href="/admin/createCandidate">
+            {candidateLinksData.map((link) => (
+              <NextLink key={link.link} href={link.link}>
+                <a
+                  className={`mb-3 ${
+                    link.link.includes(pathName) ? "text-black" : ""
+                  }`}
+                >
+                  {link.text}
+                </a>
+              </NextLink>
+            ))}
+            {/* <NextLink href="/admin/createCandidate">
               <a
                 className={`mb-3 ${
                   pathName === "/admin/createCandidate" ? "text-black" : ""
@@ -71,6 +90,13 @@ const SideBar = () => {
                 Applied Candidate
               </a>
             </NextLink>
+            <NextLink href="/admin/dashboard">
+              <a
+                className={pathName === "/admin/dashboard" ? "text-black" : ""}
+              >
+                dashboard
+              </a>
+            </NextLink> */}
           </div>
         </div>
         <div className="mb-3">

@@ -71,6 +71,8 @@ const Home: React.FC<{
   const { setLandingPageSearchFormValue } = useAppContext();
   const [seeMore, setSeeMore] = useState(false);
 
+  console.log("skills", skills);
+
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
 
@@ -155,15 +157,16 @@ const Home: React.FC<{
               </a>
             )}
           </div>
+          {/* grid grid-cols-3 md:grid-cols-5 gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10*/}
           <div className={`${styles.popularSkillsBgImg} mt-4 rounded`}>
-            <div className="grid grid-cols-3 md:grid-cols-5 max-w-6xl m-auto items-center justify-center gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10 py-10 px-4 sm:px-[15px] md:px-[30px] lg:px-[60px] capitalize">
+            <div className="flex flex-wrap gap-x-4 md:gap-x-6 lg:gap-x-11 gap-y-10 max-w-6xl m-auto items-center justify-center py-10 px-4 sm:px-[15px] md:px-[30px] lg:px-[60px] capitalize">
               {mainSkills
                 .slice(0, seeMore ? skills.length : 10)
                 .map((item: { name: string; iconUrl: string }, i) => {
                   return (
                     <div
                       key={i}
-                      className="bg-white flex flex-col w-full h-full rounded p-3 md:px-5 cursor-pointer"
+                      className="mostPopularSkillColumn bg-white flex flex-col w-full h-full rounded p-3 md:px-5 cursor-pointer"
                       onClick={(e) => selectSkillHandler(item)}
                     >
                       <div className="pl-2">
@@ -189,10 +192,8 @@ const Home: React.FC<{
                 })}
             </div>
           </div>
-
           {/* all skills list */}
           <AllSkills data={skills} onClick={(e) => selectSkillHandler(e)} />
-
           <div className="flex items-center justify-between rounded-lg max-w-6xl m-auto mt-[70px] px-3 mb-10 md:px-7 xl:px-0">
             <div className="text-[15px] w-11/12 sm:w-1/2">
               <h2 className="text-[30px] text-gray2 font-bold mb-5 lg:mb-10">
@@ -317,16 +318,13 @@ export const getServerSideProps = async () => {
 
   const data = await res.json();
 
-  const updatedData =
-    data &&
-    data.candidates &&
-    data.candidates.filter(
-      (item: { status: string }) => item.status === "ENABLED"
-    );
+  const topSkillData = [...data].sort((a: any, b: any) =>
+    a.candidates < b.candidates ? 1 : -1
+  );
 
   return {
     props: {
-      skills: data,
+      skills: topSkillData,
     },
   };
 };

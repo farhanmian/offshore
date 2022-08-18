@@ -32,6 +32,25 @@ export default function ExperienceDialog({
     setIsOpen(false);
   }
 
+  const resetFilter = () => {
+    const newFilter: any = {
+      skill: data.skill,
+      experience: { years: 0 },
+    };
+
+    const isExist: any = stateData.findIndex(
+      (data: any) => data.skill.id === newFilter.skill.id
+    );
+
+    if (isExist >= 0) {
+      state.updateAt(isExist, newFilter);
+    } else {
+      state.insertAt(0, newFilter);
+    }
+
+    setIsOpen(false);
+  };
+
   function openModal() {
     setIsOpen(true);
   }
@@ -90,7 +109,10 @@ export default function ExperienceDialog({
                     <button
                       type="button"
                       className="text-sm font-bold py-2 mr-4 min-w-[8rem] rounded-sm tracking-wider bg-white text-secondary-main shadow-full hover:bg-secondary-main hover:bg-opacity-10"
-                      onClick={closeModal}
+                      onClick={() => {
+                        resetFilter();
+                        closeModal();
+                      }}
                     >
                       Reset
                     </button>

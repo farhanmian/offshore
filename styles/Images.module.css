@@ -29,3 +29,9 @@
     background-image: none;
   }
 }
+
+@media only screen and (max-width: 767px) {
+  .main {
+    padding: 50px 30px;
+  }
+}

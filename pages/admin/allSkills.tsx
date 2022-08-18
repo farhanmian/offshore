@@ -103,7 +103,7 @@ const AllSkills = () => {
   const [skillDataList, setSkillDataList] = useState<
     {
       name: string;
-      candidatesHired: number;
+      candidates: number;
       iconUrl: string;
       id: string;
       status: string;
@@ -196,6 +196,7 @@ const AllSkills = () => {
       setActiveStatusLoading("");
     }
   };
+  console.log("skillDataList", skillDataList);
 
   return (
     <section className="h-full p-7.5">
@@ -264,7 +265,7 @@ const AllSkills = () => {
                         key={i}
                         id={item.id}
                         skillName={item.name}
-                        candidatesHired={item.candidatesHired}
+                        candidatesHired={item.candidates}
                         icon={item.iconUrl ? item.iconUrl : noImgFound}
                         type={item.type}
                         statusLoading={activeStatusLoading}

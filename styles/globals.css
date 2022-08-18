@@ -124,6 +124,10 @@ abbr {
   border-radius: 4px;
 }
 
+.mostPopularSkillColumn {
+  flex: 0 0 calc(20% - 20px);
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -152,10 +156,22 @@ abbr {
   }
 }
 
+@media (max-width: 1024px) {
+  .mostPopularSkillColumn {
+    flex: 0 0 calc(24% - 20px);
+  }
+}
+
 @media (max-width: 1000px) {
   .main {
     width: 95vw;
     padding: 40px;
+  }
+}
+
+@media (max-width: 767px) {
+  .mostPopularSkillColumn {
+    flex: 0 0 calc(34% - 20px);
   }
 }
 

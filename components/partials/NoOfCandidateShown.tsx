@@ -25,6 +25,7 @@ const NoOfCandidateShown: React.FC<{
         <option>15</option>
         <option>20</option>
         <option>25</option>
+        <option>All</option>
       </select>
     </div>
   );

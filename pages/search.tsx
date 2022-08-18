@@ -12,6 +12,7 @@ import { useAppContext } from "../store/context/AppContext";
 import { BASE_URL } from "../api/config";
 import toast, { Toaster } from "react-hot-toast";
 
+let isInitial = true;
 const Search = () => {
   const notifySuccess = (message: string) => toast.success(message);
   const notifyError = (err: string) => toast.error(err);
@@ -77,12 +78,17 @@ const Search = () => {
   }, [stateData, url]);
 
   useEffect(() => {
+    if (!isInitial) return;
     if (!landingPageSearchFormValue.name) return;
+    console.log("landingPageSearchFormValue", landingPageSearchFormValue);
+
+    console.log("name", name);
     const newFilter: any = {
       skill: landingPageSearchFormValue,
       experience: { years: 0 },
     };
     state.insertAt(0, newFilter);
+    isInitial = false;
   }, [landingPageSearchFormValue]);
 
   console.log("fetchedCandidates", fetchCandidates);

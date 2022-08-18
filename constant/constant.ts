@@ -11,8 +11,6 @@ export const skillFormInfo = {
   skillName: { ...basicInputTemplate },
   iconUrl: { ...basicInputTemplate, value: noImgFoundBase64 },
   type: { ...basicInputTemplate, value: "OTHER" }, /// skill type (MAIN or OTHER)
-  // candidatesHired: { ...basicInputTemplate, value: "hello" }, ///optional,
-  candidatesHired: { ...basicInputTemplate, value: "0" },
 };
 
 export const propertyFormInfo = {
